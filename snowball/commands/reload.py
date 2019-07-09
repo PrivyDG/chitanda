@@ -6,7 +6,7 @@ from snowball.util import admin_only, register
 @register('reload')
 @admin_only
 def call(bot, listener, target, author, message):
-    """Hot reload the bot's config and modules."""
+    """Hot reload the bot's config and modules (admin only)."""
     try:
         config.reload()
     except:  # noqa: E203
