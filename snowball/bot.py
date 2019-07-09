@@ -1,7 +1,6 @@
+import asyncio
 import logging
 from types import GeneratorType
-
-from pydle import ClientPool as IRCClientPool
 
 from snowball import BotError
 from snowball.commands import load_commands
@@ -30,18 +29,18 @@ class Snowball:
             self._connect_discord()
 
     def _connect_irc(self):
-        pool = IRCClientPool()
         for hostname, server in config['irc_servers'].items():
             logger.info(f'Connecting to IRC server: {hostname}.')
             self.irc_listeners[hostname] = IRCListener(
                 self, server['nickname'], hostname
             )
-            pool.connect(
-                self.irc_listeners[hostname],
-                hostname,
-                server['port'],
-                tls=server['tls'],
-                tls_verify=server['tls_verify'],
+            asyncio.ensure_future(
+                self.irc_listeners[hostname].connect(
+                    hostname,
+                    server['port'],
+                    tls=server['tls'],
+                    tls_verify=server['tls_verify'],
+                )
             )
 
     def _connect_discord(self):
