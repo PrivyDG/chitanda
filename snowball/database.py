@@ -1,4 +1,5 @@
 import sqlite3
+from contextlib import contextmanager
 
 from snowball.constants import DATABASE_PATH
 

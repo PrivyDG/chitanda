@@ -1,43 +1,57 @@
-from collections import deque, defaultdict
+import logging
+import re
+from collections import defaultdict, deque
 from functools import partial
 
 import discord
+
+logger = logging.getLogger(__name__)
 
 
 class DiscordListener(discord.Client):
 
     def __init__(self, bot):
         self.bot = bot
-        self.message_lock = defaultdict(bool)
+        self.message_lock = defaultdict(lambda: False)
         self.message_queue = defaultdict(partial(deque))
         super().__init__()
 
-    async def message(self, channel_id, message):
-        self.message_queue[channel_id].append(message)
-        if not self.message_lock[channel_id]:
-            self.message_lock[channel_id] = True
-            discord_channel = self.get_channel(channel_id)
-            try:
-                while self.message_queue[channel_id]:
-                    message = self.message_queue[channel_id].popleft()
-                    await discord_channel.send(message)
-            finally:
-                self.message_lock[channel_id] = False
+    async def message(self, target, message, private=False, embed=False):
+        if private:
+            target = await self.get_dm_channel_id(
+                re.search(r'<@(\d+)>', target)[1]
+            )
 
-    async def private_message(self, user_id, message):
-        discord_user = self.fetch_user(user_id)
-        dm_channel = discord_user.dm_channel
-        if dm_channel:
-            await self.message(dm_channel.id, message)
-        else:
+        logger.info(
+            f'Adding "{message}" to Discord message queue for {target}.'
+        )
+        self.message_queue[target].append((message, embed))
+
+        if not self.message_lock[target]:
+            self.message_lock[target] = True
+            try:
+                discord_channel = self.get_channel(target)
+
+                logger.info(f'Sending "{message}" to {discord_channel}.')
+                while self.message_queue[target]:
+                    message, embed = self.message_queue[target].popleft()
+                    await discord_channel.send(
+                        **{('embed' if embed else 'message'): message}
+                    )
+            finally:
+                self.message_lock[target] = False
+
+    async def get_dm_channel_id(self, user_id):
+        discord_user = await self.fetch_user(user_id)
+        if not discord_user.dm_channel:
             await discord_user.create_dm()
-            await self.message(discord_user.dm_channel.id, message)
+        return discord_user.dm_channel.id
 
     async def on_message(self, message):
         if not message.author.bot:
-            self.bot.receive_discord_message(
+            await self.bot.dispatch_command(
                 self,
                 message.channel.id,
-                f'<@{message.author.id}',
+                f'<@{message.author.id}>',
                 message.content,
             )

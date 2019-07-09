@@ -1,9 +1,15 @@
+import asyncio
+import logging
 from types import GeneratorType
 
 from pydle import ClientPool as IRCClientPool
+
 from snowball.commands import load_commands
-from snowball.listeners import IRCListener, DiscordListener
 from snowball.config import Config
+from snowball.listeners import DiscordListener, IRCListener
+
+logger = logging.getLogger(__name__)
+
 
 class Snowball:
 
@@ -16,43 +22,59 @@ class Snowball:
         load_commands()
 
     def connect(self):
+        logger.info('Initiating connection to listeners.')
         if self.config['irc_servers']:
+            logger.info('IRC Servers found, connecting...')
             self._connect_irc()
         if self.config['discord_token']:
-            self._connect_discord(discord_token)
+            logger.info('Discord token found, connecting...')
+            self._connect_discord()
 
     def _connect_irc(self):
         pool = IRCClientPool()
-        for server in self.config['irc_servers']:
-            self.irc_listeners[server.hostname] = IRCListener(
-                server.nickname,
-                username=server.nickname,
-                realname=server.nickname,
+        for hostname, server in self.config['irc_servers'].items():
+            logger.info(f'Connecting to IRC server: {hostname}.')
+            self.irc_listeners[hostname] = IRCListener(
+                self, server['nickname'], hostname
             )
-            asyncio.ensure_future(
-                pool.connect(
-                    self.irc_listeners[server.hostname],
-                    server.hostname,
-                    server.port,
-                    tls=server.tls,
-                    tls_verify=server.tls_verify,
-                )
+            pool.connect(
+                self.irc_listeners[hostname],
+                hostname,
+                server['port'],
+                tls=server['tls'],
+                tls_verify=server['tls_verify'],
             )
-            self.irc_listeners[server.hostname] = client
 
     def _connect_discord(self):
         self.discord_listener = DiscordListener(self)
         self.discord_listener.run(self.config['discord_token'])
 
-    def dispatch_command(self, listener, target, author, message):
+    async def dispatch_command(self, listener, target, author, message):
+        logger.info(
+            f'Message received on {listener.__class__.__name__} in '
+            f'channel {target} from {author}: {message}'
+        )
         try:
-            command = self.bot.commands[message.split(' ', 1)[0].lower()]
+            if not message.startswith(self.config['trigger_character']):
+                return
+
+            trigger = message.split(' ', 1)[0].lower()
+            command = self.commands[trigger[1:]]
         except (IndexError, KeyError):
             return
 
-        response = command.call(self, listener, author, message)
+        logger.info(f'Command triggered: {trigger}.')
+        response = command.call(self, listener, target, author, message)
+
         if isinstance(response, GeneratorType):
-            for message in response:
-                asyncio.create_task(listener.message(target, message))
+            logger.info('Response received as generator, sending to target.')
+            for resp in response:
+                if isinstance(resp, str):
+                    resp = {'target': target, 'message': resp}
+                await listener.message(**resp)
+        elif isinstance(response, str):
+            logger.info('Response received as str, sending to target.')
+            await listener.message(target, response)
         else:
-            asyncio.create_task(listener.message(target, message))
+            logger.info('Response received as dict, sending to target.')
+            await listener.message(**response)

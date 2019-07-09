@@ -9,23 +9,20 @@ class IRCListener(
     pydle.features.RFC1459Support,
 ):
 
-    def __init__(self, bot, host, port, tls, tls_verify):
+    def __init__(self, bot, nickname, hostname):
         self.bot = bot
-        self.host = host
-        self.port = port
-        self.tls = tls
-        self.tls_verify = self.tls_verify
-        super().__init__(host, port, tls=tls, tls_verify=tls_verify)
+        self.hostname = hostname
+        super().__init__(nickname, username=nickname, realname=nickname)
 
     async def on_connect(self):
         await self.set_mode(self.nickname, 'BI')
-        await self._auth_nickserv()
+        await self._perform()
         await self._join_channels()
         await self._loop_interrupter()
 
-    async def _auth_nickserv(self):
-        # check against list of nickserv passwords
-        pass
+    async def _perform(self):
+        for cmd in self.bot.config['irc_servers'][self.hostname]['perform']:
+            await self.raw(cmd)
 
     async def _join_channels(self):
         # await self.join(channel)
@@ -44,5 +41,8 @@ class IRCListener(
             # TODO: Reconnect
             pass
 
+    async def message(self, target, message, **_):
+        super().message(target, message)
+
     async def on_channel_message(self, target, author, message):
-        self.bot.dispatch_command(self, target, author, message)
+        await self.bot.dispatch_command(self, target, author, message)

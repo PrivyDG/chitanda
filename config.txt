@@ -1,8 +1,0 @@
-NICKNAME = 'snowball'
-NICKSERV_PASS = 'password'
-CHANNEL = '#channel'
-
-IRC_HOST = 'irc.freenode.net'
-IRC_PORT = 6697
-IRC_TLS = True
-IRC_TLS_VERIFY = False
