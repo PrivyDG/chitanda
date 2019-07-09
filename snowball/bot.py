@@ -1,52 +1,64 @@
-import asyncio
 from types import GeneratorType
 
-import pydle
-
-import config
+from pydle import ClientPool as IRCClientPool
 from snowball.commands import load_commands
+from snowball.listeners import IRCListener, DiscordListener
 
-
-class Snowball(
-    pydle.Client,
-    pydle.features.TLSSupport,
-    pydle.features.RFC1459Support,
-):
+class Snowball:
 
     commands = {}
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
+        self.irc_listeners = {}
+        self.discord_listener = None
         load_commands()
-        super().__init__(*args, **kwargs)
 
-    async def on_connect(self):
-        if config.NICKSERV_PASS:
-            await self.raw(f'NICKSERV IDENTIFY {config.NICKSERV_PASS}\r\n')
-        await self.set_mode(self.nickname, 'BI')
-        await self.join(config.CHANNEL)
-        await self.loop_interrupter()
+    def connect(self):
+        irc_servers = self._load_irc_servers()
+        if irc_servers:
+            self._connect_irc(irc_servers)
+        discord_token = self._load_discord_token()
+        if discord_token:
+            self._connect_discord(discord_token)
 
-    async def loop_interrupter(self):
-        """
-        Pydle's event loop is blocking outside coroutines from running.
-        This is a problem. So I am doing this.
-        """
-        while True:
-            await asyncio.sleep(0.01)
+    def _connect_irc(self, irc_servers):
+        pool = IRCClientPool()
+        for server in irc_servers:
+            self.irc_listeners[server.hostname] = IRCListener(
+                server.nickname,
+                username=server.nickname,
+                realname=server.nickname,
+            )
+            asyncio.ensure_future(
+                pool.connect(
+                    self.irc_listeners[server.hostname],
+                    server.hostname,
+                    server.port,
+                    tls=server.tls,
+                    tls_verify=server.tls_verify,
+                )
+            )
+            self.irc_listeners[server.hostname] = client
 
-    async def message(self, message):
-        return await super().message(config.CHANNEL, message)
+    def _connect_discord(self, discord_token):
+        self.discord_listener = DiscordListener(self)
+        self.discord_listener.run(discord_token)
 
-    async def on_channel_message(self, target, author, message):
-        if target != config.CHANNEL:
-            return
+    def dispatch_command(self, listener, target, author, message):
         try:
-            command = message.split(' ', 1)[0].lower()
-            resp = self.commands[command].call(self, author, message)
-            if isinstance(resp, str):
-                await self.message(resp)
-            elif isinstance(resp, GeneratorType):
-                for msg in resp:
-                    await self.message(msg)
+            command = self.bot.commands[message.split(' ', 1)[0].lower()]
         except (IndexError, KeyError):
-            pass
+            return
+
+        response = command.call(self, listener, author, message)
+        if isinstance(response, GeneratorType):
+            for message in response:
+                asyncio.create_task(listener.message(target, message))
+        else:
+            asyncio.create_task(listener.message(target, message))
+
+    def _load_irc_servers(self):
+        pass
+
+    def _load_discord_token(self):
+        pass

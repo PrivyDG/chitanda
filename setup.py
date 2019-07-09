@@ -40,7 +40,6 @@ setup(
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7'
     ],  # Optional
     packages=find_packages(),  # Required
@@ -49,6 +48,7 @@ setup(
         'huey (>=1.10,<2.0)',
         'gevent (>=1.4,<2.0)',
         'pydle (>=0.9.1,<0.10.0)',
+        'discord.py (>=1.2,<2.0)',
     ],  # Optional
     # https://setuptools.readthedocs.io/en/latest/setuptools.html#dependencies-that-aren-t-in-pypi
     dependency_links=[],  # Optional

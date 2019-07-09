@@ -8,13 +8,16 @@ readme = "README.md"
 repository = "https://github.com/dzlr/snowball"
 
 [tool.poetry.scripts]
-snowball = 'snowball.__main__:main'
+snowball = 'snowball.__main__:cmdgroup'
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 huey = "^1.10"
 gevent = "^1.4"
 pydle = "^0.9.1"
+"discord.py" = "^1.2"
+click = "^7.0"
+appdirs = "^1.4"
 
 [tool.poetry.dev-dependencies]
 poetry-setup = "^0.3.6"

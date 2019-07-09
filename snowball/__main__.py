@@ -1,30 +1,15 @@
 import asyncio
 
-import config
+from snowball import cmdgroup
 from snowball.bot import Snowball
 from snowball.tasks import huey
+from snowball.migrate import migrate  # noqa
 
 
-def main():
+@cmdgroup.command()
+def run():
+    """Run the bot."""
     huey.start()
-
-    bot = Snowball(
-        config.NICKNAME,
-        username=config.NICKNAME,
-        realname=config.NICKNAME,
-    )
-
-    asyncio.ensure_future(
-        bot.connect(
-            config.IRC_HOST,
-            config.IRC_PORT,
-            tls=config.IRC_TLS,
-            tls_verify=config.IRC_TLS_VERIFY,
-        )
-    )
-
+    bot = Snowball()
+    bot.connect()
     asyncio.get_event_loop().run_forever()
-
-
-if __name__ == '__main__':
-    main()
