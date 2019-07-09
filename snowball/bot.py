@@ -3,12 +3,14 @@ from types import GeneratorType
 from pydle import ClientPool as IRCClientPool
 from snowball.commands import load_commands
 from snowball.listeners import IRCListener, DiscordListener
+from snowball.config import Config
 
 class Snowball:
 
     commands = {}
 
     def __init__(self):
+        self.config = Config()
         self.irc_listeners = {}
         self.discord_listener = None
         load_commands()

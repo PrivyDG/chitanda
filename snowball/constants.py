@@ -1,0 +1,20 @@
+import json
+from pathlib import Path
+
+import appdirs
+
+from snowball import cmdgroup
+
+logger = logging.getLogger(__name__)
+
+DATA_DIR = Path(user_data_dir('snowball', 'dazzler'))
+DATABASE_PATH = DATA_DIR / 'db.sqlite3'
+CONFIG_PATH = DATA_DIR / 'config.json'
+
+
+if not DATA_DIR.is_dir():
+    try:
+        DATA_DIR.mkdir(mode=0o755)
+    except OSError:
+        logger.critical('Could not create data directory.')
+        sys.exit(1)

@@ -1,11 +1,11 @@
 import sqlite3
 
-DB_PATH = pathlib.Path(__file__).parent.parent / 'db.sqlite3'
+from snowball.constants import DATABASE_PATH
 
 
 @contextmanager
 def database():
-    with sqlite3.connect(str(DB_PATH)) as conn:
+    with sqlite3.connect(str(DATABASE_PATH)) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         yield conn, cursor

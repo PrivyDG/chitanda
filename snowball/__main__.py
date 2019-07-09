@@ -2,8 +2,9 @@ import asyncio
 
 from snowball import cmdgroup
 from snowball.bot import Snowball
+from snowball.constants import CONFIG_PATH
+from snowball.config import BLANK_CONF
 from snowball.tasks import huey
-from snowball.migrate import migrate  # noqa
 
 
 @cmdgroup.command()
@@ -13,3 +14,18 @@ def run():
     bot = Snowball()
     bot.connect()
     asyncio.get_event_loop().run_forever()
+
+
+@cmdgroup.command()
+def config():
+    """Edit the configuration file."""
+    if not CONFIG_PATH.is_file():
+        with open(CONFIG_PATH, 'w') as f:
+            json.dump(BLANK_CONF, f, indent=4)
+    click.edit(filename=CONFIG_PATH)
+
+
+@cmdgroup.command()
+def migrate():
+    """Upgrade the database to the latest migration."""
+    pass
