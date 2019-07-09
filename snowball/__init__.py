@@ -19,6 +19,10 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
+class BotError(Exception):
+    pass
+
+
 @click.group()
 def cmdgroup():
     pass

@@ -2,6 +2,7 @@ import inspect
 
 from discord import Embed
 
+from snowball.config import config
 from snowball.listeners import DiscordListener
 from snowball.util import register
 
@@ -14,7 +15,7 @@ def call(bot, listener, target, author, message):
         for trigger, command in sorted(bot.commands.items()):
             print(trigger)
             embed.add_field(
-                name=f'{bot.config["trigger_character"]}{trigger}',
+                name=f'{config["trigger_character"]}{trigger}',
                 value=inspect.getdoc(command.call),
             )
         return {

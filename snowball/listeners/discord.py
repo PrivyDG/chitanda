@@ -16,11 +16,12 @@ class DiscordListener(discord.Client):
         self.message_queue = defaultdict(partial(deque))
         super().__init__()
 
+    def __repr__(self):
+        return 'DiscordListener'
+
     async def message(self, target, message, private=False, embed=False):
         if private:
-            target = await self.get_dm_channel_id(
-                re.search(r'<@(\d+)>', target)[1]
-            )
+            target = await self.get_dm_channel_id(target)
 
         logger.info(
             f'Adding "{message}" to Discord message queue for {target}.'
@@ -36,7 +37,7 @@ class DiscordListener(discord.Client):
                 while self.message_queue[target]:
                     message, embed = self.message_queue[target].popleft()
                     await discord_channel.send(
-                        **{('embed' if embed else 'message'): message}
+                        **{('embed' if embed else 'content'): message}
                     )
             finally:
                 self.message_lock[target] = False
@@ -52,6 +53,6 @@ class DiscordListener(discord.Client):
             await self.bot.dispatch_command(
                 self,
                 message.channel.id,
-                f'<@{message.author.id}>',
+                message.author.id,
                 message.content,
             )

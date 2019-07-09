@@ -2,6 +2,8 @@ import asyncio
 
 import pydle
 
+from snowball.config import config
+
 
 class IRCListener(
     pydle.Client,
@@ -14,6 +16,9 @@ class IRCListener(
         self.hostname = hostname
         super().__init__(nickname, username=nickname, realname=nickname)
 
+    def __repr__(self):
+        return 'IRCListener@{self.hostname}'
+
     async def on_connect(self):
         await self.set_mode(self.nickname, 'BI')
         await self._perform()
@@ -21,7 +26,7 @@ class IRCListener(
         await self._loop_interrupter()
 
     async def _perform(self):
-        for cmd in self.bot.config['irc_servers'][self.hostname]['perform']:
+        for cmd in config['irc_servers'][self.hostname]['perform']:
             await self.raw(cmd)
 
     async def _join_channels(self):

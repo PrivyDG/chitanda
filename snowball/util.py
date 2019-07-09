@@ -1,4 +1,8 @@
+import functools
 import sys
+
+from snowball import BotError
+from snowball.config import config
 
 
 def register(trigger):
@@ -6,4 +10,14 @@ def register(trigger):
         from snowball.bot import Snowball
         Snowball.commands[trigger] = sys.modules[func.__module__]
         return func
+    return wrapper
+
+
+def admin_only(func):
+    @functools.wraps(func)
+    def wrapper(bot, listener, target, author, message):
+        if str(author) in config['admins'].get(str(listener), []):
+            return func(bot, listener, target, author, message)
+        raise BotError('Unauthorized.')
+
     return wrapper
