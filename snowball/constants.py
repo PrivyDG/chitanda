@@ -1,9 +1,8 @@
-import json
+import logging
+import sys
 from pathlib import Path
 
-import appdirs
-
-from snowball import cmdgroup
+from appdirs import user_data_dir
 
 logger = logging.getLogger(__name__)
 

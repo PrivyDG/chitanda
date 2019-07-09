@@ -16,16 +16,14 @@ class Snowball:
         load_commands()
 
     def connect(self):
-        irc_servers = self._load_irc_servers()
-        if irc_servers:
-            self._connect_irc(irc_servers)
-        discord_token = self._load_discord_token()
-        if discord_token:
+        if self.config['irc_servers']:
+            self._connect_irc()
+        if self.config['discord_token']:
             self._connect_discord(discord_token)
 
-    def _connect_irc(self, irc_servers):
+    def _connect_irc(self):
         pool = IRCClientPool()
-        for server in irc_servers:
+        for server in self.config['irc_servers']:
             self.irc_listeners[server.hostname] = IRCListener(
                 server.nickname,
                 username=server.nickname,
@@ -42,9 +40,9 @@ class Snowball:
             )
             self.irc_listeners[server.hostname] = client
 
-    def _connect_discord(self, discord_token):
+    def _connect_discord(self):
         self.discord_listener = DiscordListener(self)
-        self.discord_listener.run(discord_token)
+        self.discord_listener.run(self.config['discord_token'])
 
     def dispatch_command(self, listener, target, author, message):
         try:
@@ -58,9 +56,3 @@ class Snowball:
                 asyncio.create_task(listener.message(target, message))
         else:
             asyncio.create_task(listener.message(target, message))
-
-    def _load_irc_servers(self):
-        pass
-
-    def _load_discord_token(self):
-        pass

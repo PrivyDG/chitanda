@@ -2,6 +2,9 @@ from gevent import monkey  # isort:skip
 
 monkey.patch_all()  # noqa
 
+import logging
+import sys
+
 import click
 
 logger = logging.getLogger()
