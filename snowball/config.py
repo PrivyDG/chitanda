@@ -2,7 +2,7 @@ import json
 import logging
 import sys
 
-from snowball.constants import CONFIG_PATH
+from snowball import CONFIG_PATH
 
 logger = logging.getLogger(__name__)
 

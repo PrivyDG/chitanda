@@ -6,7 +6,7 @@ import click
 from snowball import cmdgroup
 from snowball.bot import Snowball
 from snowball.config import BLANK_CONFIG
-from snowball.constants import CONFIG_PATH
+from snowball import CONFIG_PATH
 from snowball.tasks import huey
 
 
