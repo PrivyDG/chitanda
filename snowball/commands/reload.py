@@ -5,7 +5,7 @@ from snowball.util import admin_only, register
 
 @register('reload')
 @admin_only
-def call(bot, listener, target, author, message):
+def call(bot, listener, target, author, message, private):
     """Hot reload the bot's config and modules (admin only)."""
     try:
         config.reload()

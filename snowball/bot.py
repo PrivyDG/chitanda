@@ -47,10 +47,17 @@ class Snowball:
         self.discord_listener = DiscordListener(self)
         self.discord_listener.run(config['discord_token'])
 
-    async def dispatch_command(self, listener, target, author, message):
+    async def dispatch_command(
+        self,
+        listener,
+        target,
+        author,
+        message,
+        private,
+    ):
         logger.info(
-            f'Message received on {listener.__class__.__name__} in '
-            f'channel {target} from {author}: {message}'
+            f'Message received on {listener} in channel {target} '
+            f'from {author}: {message}'
         )
         try:
             if not message.startswith(config['trigger_character']):
@@ -63,7 +70,14 @@ class Snowball:
 
         logger.info(f'Command triggered: {trigger}.')
         try:
-            response = command.call(self, listener, target, author, message)
+            response = command.call(
+                self,
+                listener,
+                target,
+                author,
+                message,
+                private,
+            )
         except BotError as e:
             logger.info(f'Error triggered by {author}: {e}.')
             response = {

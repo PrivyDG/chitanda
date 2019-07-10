@@ -15,9 +15,9 @@ def register(trigger):
 
 def admin_only(func):
     @functools.wraps(func)
-    def wrapper(bot, listener, target, author, message):
+    def wrapper(bot, listener, target, author, message, private):
         if str(author) in config['admins'].get(str(listener), []):
-            return func(bot, listener, target, author, message)
+            return func(bot, listener, target, author, message, private)
         raise BotError('Unauthorized.')
 
     return wrapper

@@ -1,8 +1,11 @@
 import asyncio
+import logging
 
 import pydle
 
 from snowball.config import config
+
+logger = logging.getLogger(__name__)
 
 
 class IRCListener(
@@ -17,7 +20,7 @@ class IRCListener(
         super().__init__(nickname, username=nickname, realname=nickname)
 
     def __repr__(self):
-        return 'IRCListener@{self.hostname}'
+        return f'IRCListener@{self.hostname}'
 
     async def on_connect(self):
         await self.set_mode(self.nickname, 'BI')
@@ -26,8 +29,9 @@ class IRCListener(
         await self._loop_interrupter()
 
     async def _perform(self):
+        logger.info(f'Running IRC perform commands on {self.hostname}.')
         for cmd in config['irc_servers'][self.hostname]['perform']:
-            await self.raw(cmd)
+            await self.raw(f'{cmd}\r\n')
 
     async def _join_channels(self):
         # await self.join(channel)
@@ -47,7 +51,31 @@ class IRCListener(
             pass
 
     async def message(self, target, message, **_):
-        super().message(target, message)
+        logger.info(
+            f'Sending "{message}" on IRC ({self.hostname}) to {target}.'
+        )
+        await super().message(target, message)
 
-    async def on_channel_message(self, target, author, message):
-        await self.bot.dispatch_command(self, target, author, message)
+    async def on_channel_message(self, target, by, message):
+        if by != self.nickname:
+            await self.bot.dispatch_command(
+                self,
+                target,
+                by,
+                message,
+                private=False,
+            )
+
+    async def on_private_message(self, target, by, message):
+        if by != self.nickname:
+            await self.bot.dispatch_command(
+                self,
+                by,
+                by,
+                message,
+                private=True,
+            )
+
+    async def on_raw(self, message):
+        logger.debug(f'Received raw IRC message: {message}')
+        await super().on_raw(message)

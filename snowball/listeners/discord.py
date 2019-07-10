@@ -33,7 +33,9 @@ class DiscordListener(discord.Client):
             try:
                 discord_channel = self.get_channel(target)
 
-                logger.info(f'Sending "{message}" to {discord_channel}.')
+                logger.info(
+                    f'Sending "{message}" on Discord to {discord_channel}.'
+                )
                 while self.message_queue[target]:
                     message, embed = self.message_queue[target].popleft()
                     await discord_channel.send(
@@ -55,4 +57,5 @@ class DiscordListener(discord.Client):
                 message.channel.id,
                 message.author.id,
                 message.content,
+                private=isinstance(message.channel, discord.DMChannel),
             )

@@ -8,7 +8,7 @@ from snowball.util import register
 
 
 @register('help')
-def call(bot, listener, target, author, message):
+def call(bot, listener, target, author, message, private):
     """Sends a private message detailing the available commands."""
     if isinstance(listener, DiscordListener):
         embed = Embed(title='Help!')
@@ -35,5 +35,8 @@ def _generate_help_lines(bot, author):
         doc = inspect.getdoc(command.call)
         yield {
             'target': author,
-            'message': f'{trigger.ljust(longest)} - {doc}',
+            'message': (
+                f'{config["trigger_character"]}'
+                f'{trigger.ljust(longest)} - {doc}'
+            ),
         }
