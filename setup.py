@@ -38,7 +38,7 @@ setup(
     author_email="dazzler@riseup.net",  # Optional
     # For a list of valid classifiers, see https://pypi.org/classifiers/
     classifiers=[
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7'
     ],  # Optional
@@ -49,6 +49,8 @@ setup(
         'gevent (>=1.4,<2.0)',
         'pydle (>=0.9.1,<0.10.0)',
         'discord.py (>=1.2,<2.0)',
+        'click (>=7.0,<8.0)',
+        'appdirs (>=1.4,<2.0)',
     ],  # Optional
     # https://setuptools.readthedocs.io/en/latest/setuptools.html#dependencies-that-aren-t-in-pypi
     dependency_links=[],  # Optional
@@ -56,7 +58,7 @@ setup(
     include_package_data=True,
     entry_points={  # Optional
         'console_scripts': [
-            'snowball=snowball.__main__:main',
+            'snowball=snowball.__main__:cmdgroup',
         ],
     },
     # https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
