@@ -1,4 +1,5 @@
 import functools
+import re
 import sys
 
 from snowball import BotError
@@ -6,11 +7,30 @@ from snowball.config import config
 
 
 def register(trigger):
-    def wrapper(func):
+    def decorator(func):
         from snowball.bot import Snowball
         Snowball.commands[trigger] = sys.modules[func.__module__]
-        return func
-    return wrapper
+        return functools.wraps(func)(func)
+
+    return decorator
+
+
+def args(*regexes):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(bot, listener, target, author, message, private):
+            msg_content = message.split(' ', 1)[1] if ' ' in message else ''
+            for regex in regexes:
+                match = re.match(regex, msg_content)
+                if match:
+                    return func(
+                        bot, listener, target, author, match.groups(), private
+                    )
+            raise BotError('Invalid arguments.')
+
+        return wrapper
+
+    return decorator
 
 
 def admin_only(func):
@@ -43,7 +63,7 @@ def private_message_only(func):
     return wrapper
 
 
-def allowed_listeners(listeners):
+def allowed_listeners(*listeners):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(bot, listener, target, author, message, private):
