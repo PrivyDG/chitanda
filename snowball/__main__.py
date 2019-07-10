@@ -3,6 +3,7 @@ import json
 
 import click
 
+import snowball.database  # noqa
 from snowball import CONFIG_PATH, cmdgroup
 from snowball.bot import Snowball
 from snowball.config import BLANK_CONFIG
@@ -25,12 +26,6 @@ def config():
         with open(CONFIG_PATH, 'w') as f:
             json.dump(BLANK_CONFIG, f, indent=4)
     click.edit(filename=CONFIG_PATH)
-
-
-@cmdgroup.command()
-def migrate():
-    """Upgrade the database to the latest migration."""
-    pass
 
 
 cmdgroup()
