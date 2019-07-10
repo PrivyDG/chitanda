@@ -1,5 +1,4 @@
 import logging
-import re
 from collections import defaultdict, deque
 from functools import partial
 

@@ -2,14 +2,15 @@ import asyncio
 
 from snowball import BotError
 from snowball.listeners import Listeners
-from snowball.util import allowed_listeners, args, register
+from snowball.util import admin_only, allowed_listeners, args, register
 
 
 @register('part')
 @allowed_listeners(Listeners.IRC)
+@admin_only
 @args(r'$', r'(#[^ ]+)$')
 def call(bot, listener, target, author, args, private):
-    """Parts a channel (admin only) (IRC only)."""
+    """Part a channel."""
     if args:
         channel = args[0]
         asyncio.ensure_future(listener.raw(f'PART {channel}\r\n'))

@@ -34,6 +34,8 @@ def args(*regexes):
 
 
 def admin_only(func):
+    setattr(func, 'admin_only', True)
+
     @functools.wraps(func)
     def wrapper(bot, listener, target, author, message, private):
         if str(author) in config['admins'].get(str(listener), []):
@@ -44,6 +46,8 @@ def admin_only(func):
 
 
 def channel_only(func):
+    setattr(func, 'channel_only', True)
+
     @functools.wraps(func)
     def wrapper(bot, listener, target, author, message, private):
         if not private:
@@ -54,6 +58,8 @@ def channel_only(func):
 
 
 def private_message_only(func):
+    setattr(func, 'private_message_only', True)
+
     @functools.wraps(func)
     def wrapper(bot, listener, target, author, message, private):
         if private:
@@ -65,6 +71,8 @@ def private_message_only(func):
 
 def allowed_listeners(*listeners):
     def decorator(func):
+        setattr(func, 'listeners', {l.value for l in listeners})
+
         @functools.wraps(func)
         def wrapper(bot, listener, target, author, message, private):
             if not listeners:
