@@ -56,7 +56,7 @@ Example configuration:
         "DiscordListener": [
             "111111111111111111"
         ],
-        "IRC@irc.freenode.net": [
+        "IRCListener@irc.freenode.net": [
             "ballsnow"
         ]
     }
