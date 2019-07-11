@@ -17,6 +17,7 @@ class IRCListener(
     def __init__(self, bot, nickname, hostname):
         self.bot = bot
         self.hostname = hostname
+        self.performed = False  # Whether or not performs have been sent.
         super().__init__(nickname, username=nickname, realname=nickname)
 
     def __repr__(self):
@@ -25,17 +26,13 @@ class IRCListener(
     async def on_connect(self):
         await self.set_mode(self.nickname, 'BI')
         await self._perform()
-        await self._join_channels()
         await self._loop_interrupter()
 
     async def _perform(self):
         logger.info(f'Running IRC perform commands on {self.hostname}.')
         for cmd in config['irc_servers'][self.hostname]['perform']:
             await self.raw(f'{cmd}\r\n')
-
-    async def _join_channels(self):
-        # await self.join(channel)
-        pass
+        self.performed = True
 
     async def _loop_interrupter(self):
         """

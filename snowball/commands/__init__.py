@@ -3,9 +3,11 @@ import sys
 from pkgutil import iter_modules
 
 
-def load_commands():
+def load_commands(bot):
     for name in _get_module_names():
         importlib.import_module(name)
+        if hasattr(sys.modules[name], 'setup'):
+            sys.modules[name].setup(bot)
 
 
 def reload_commands():

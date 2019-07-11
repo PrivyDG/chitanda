@@ -17,7 +17,7 @@ class Snowball:
     def __init__(self):
         self.irc_listeners = {}
         self.discord_listener = None
-        load_commands()
+        load_commands(self)
 
     def connect(self):
         logger.info('Initiating connection to listeners.')
@@ -85,7 +85,8 @@ class Snowball:
                 'message': f'Error: {e}',
             }
 
-        await self._send_response(listener, target, response)
+        if response:
+            await self._send_response(listener, target, response)
 
     async def _send_response(self, listener, target, response):
         if isinstance(response, GeneratorType):
