@@ -92,12 +92,12 @@ class Snowball:
         if isinstance(response, GeneratorType):
             logger.info('Response received as generator, sending to target.')
             for resp in response:
-                if isinstance(resp, str):
-                    resp = {'target': target, 'message': resp}
+                if not isinstance(resp, dict):
+                    resp = {'target': target, 'message': str(resp)}
                 await listener.message(**resp)
-        elif isinstance(response, str):
-            logger.info('Response received as str, sending to target.')
-            await listener.message(target, response)
-        else:
+        elif isinstance(response, dict):
             logger.info('Response received as dict, sending to target.')
             await listener.message(**response)
+        else:
+            logger.info('Response received as str, sending to target.')
+            await listener.message(target, str(response))
