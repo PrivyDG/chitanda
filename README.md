@@ -10,8 +10,8 @@ $ cd snowball
 $ python3 -m virtualenv .venv
 $ source .venv/bin/activate
 $ pip install -e .
-$ snowball config  # See next section in README.
 $ snowball migrate  # Upgrade database to latest version.
+$ snowball config  # See next section in README.
 ```
 
 ## Configuration

@@ -31,7 +31,7 @@ if not DATA_DIR.is_dir():
     try:
         DATA_DIR.mkdir(mode=0o700)
     except OSError:
-        logger.critical('Could not create data directory.')
+        logger.critical(f'Could not create data directory ({DATA_DIR}).')
         sys.exit(1)
 
 
