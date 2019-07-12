@@ -1,6 +1,6 @@
 # snowball
 
-An IRC & Discord bot framework. Requires Python 3.7.
+An IRC & Discord bot. Requires Python 3.7.
 
 ## Setup
 
