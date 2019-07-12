@@ -2,9 +2,13 @@ import importlib
 import sys
 from pkgutil import iter_modules
 
+from snowball import config
+
 
 def load_commands(bot):
     for name in _get_module_names():
+        if not _is_module_enabled(name) and name in sys.modules:
+            del sys.modules[name]
         importlib.import_module(name)
         if hasattr(sys.modules[name], 'setup'):
             sys.modules[name].setup(bot)
@@ -16,6 +20,17 @@ def reload_commands():
             importlib.reload(sys.modules[name])
         else:
             importlib.import_module(sys.modules[name])
+
+
+def _is_module_enabled(full_name):
+    if config['modules']:
+        try:
+            short_name = full_name.lstrip('snowball.commands.').split('.')[0]
+            if short_name not in config['modules']:
+                return False
+        except IndexError:
+            pass
+    return True
 
 
 def _get_module_names(pkg_path=__name__):

@@ -71,3 +71,75 @@ $ cd snowball
 $ source .venv/bin/activate
 $ snowball
 ```
+
+## Modules
+
+### GitHub Relay (`github_relay`)
+
+This module allows the bot to receive GitHub webhooks and report push, issue,
+and pull request events to a specified channel. If this module is enabled, a
+key/value pair similar to the following should be added to the configuration
+file.
+
+- `port` - The port for the webserver to listen on.
+- `secret` - A secret key used to verify signed payloads from GitHub.
+- `relays` - A dictionary mapping repository IDs to lists of channels to relay
+  webhook events to.
+- `relays[][[listener]]` - Corresponds to the channel to relay to. Either
+  `IRC@{hostname}` or `Discord`).
+- `relays[][[channel]]` - The channel to relay to. `#channel` for IRC and the
+  channel ID for Discord.
+- `relays[][[branches]]` - If empty, commits to all branches will be reported.
+  Otherwise, only commits to the listed branches will be reported.
+
+```json
+"github_relay": {
+    "port": 38428,
+    "secret": null,
+    "relays": {
+        1: [
+            {
+                "listener": "Discord",
+                "channel": "12345",
+                "branches": [
+                    "master"
+                ]
+            }
+        ]
+    }
+}
+```
+
+No commands
+
+### Help (`help`)
+
+Send a private message with all bot commands to any user who types !help.
+
+Commands:
+```
+help  // triggers the private message
+```
+
+### IRC Channels (`irc_channels`)
+
+An IRC only module that handles channel joins and parts. It keeps track of
+which channels the bot was in prior to quitting, handling channel rejoins after
+the bot reconnects. Admin only.
+
+Commands:
+```
+join #channel
+part  // parts current channel
+part #channel
+```
+
+### Reload (`reload`)
+
+Hot reloads the bot's config and modules. Will handle changes in the bot's
+configuration of enabled modules. Admin only.
+
+Commands:
+```
+reload  // triggers the reload
+```

@@ -15,6 +15,6 @@ def call(bot, listener, target, author, message, private):
     try:
         reload_commands()
     except:  # noqa: E203
-        return 'Error reloading config.'
+        return 'Error reloading commands.'
 
     return 'Commands reloaded.'
