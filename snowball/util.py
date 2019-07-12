@@ -19,7 +19,6 @@ def args(*regexes):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(bot, listener, target, author, message, private):
-            msg_content = message.split(' ', 1)[1] if ' ' in message else ''
             for regex in regexes:
                 match = re.match(regex, msg_content)
                 if match:

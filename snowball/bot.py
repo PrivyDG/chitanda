@@ -75,7 +75,7 @@ class Snowball:
                 listener,
                 target,
                 author,
-                message,
+                message.split(' ', 1)[1] if ' ' in message else '',
                 private,
             )
         except BotError as e:
