@@ -2,7 +2,7 @@ import importlib
 import sys
 from pkgutil import iter_modules
 
-from snowball import config
+from snowball.config import config
 
 
 def load_commands(bot):
@@ -23,10 +23,10 @@ def reload_commands():
 
 
 def _is_module_enabled(full_name):
-    if config['modules']:
+    if config['modules_enabled']:
         try:
             short_name = full_name.lstrip('snowball.commands.').split('.')[0]
-            if short_name not in config['modules']:
+            if short_name not in config['modules_enabled']:
                 return False
         except IndexError:
             pass

@@ -97,7 +97,7 @@ file.
     "port": 38428,
     "secret": null,
     "relays": {
-        1: [
+        "1": [
             {
                 "listener": "Discord",
                 "channel": "12345",

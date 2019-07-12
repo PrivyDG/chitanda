@@ -1,7 +1,6 @@
 import asyncio
 import logging
 from collections import defaultdict
-from types import MethodType
 
 from snowball.database import database
 

@@ -7,7 +7,7 @@ import sys
 from aiohttp import web
 from discord import Embed
 
-from snowball import config
+from snowball.config import config
 from snowball.listeners import DiscordListener
 
 logger = logging.getLogger(__name__)
@@ -53,7 +53,8 @@ async def _handle_request(bot, request, **kwargs):
     payload = await request.json()
 
     try:
-        cfgs = config['github_relay']['relays'][payload['respository']['id']]
+        repo_id = str(payload['respository']['id'])
+        cfgs = config['github_relay']['relays'][repo_id]
     except KeyError:
         logger.info('GitHub request\'s repository is not tracked, ignoring.')
         return web.Response('Untracked responsitory.', status=500)
