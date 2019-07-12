@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 
 *.swp
+pip-wheel-metadata

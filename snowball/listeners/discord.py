@@ -30,7 +30,7 @@ class DiscordListener(discord.Client):
         if not self.message_lock[target]:
             self.message_lock[target] = True
             try:
-                discord_channel = self.get_channel(target)
+                discord_channel = self.get_channel(int(target))
 
                 logger.info(
                     f'Sending "{message}" on Discord to {discord_channel}.'

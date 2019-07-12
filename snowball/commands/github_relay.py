@@ -20,7 +20,7 @@ def setup(bot):
 
 def _create_webserver(bot):
     app = web.Application()
-    app.router.add_route('POST', '/', lambda bot, request, **kwargs: (
+    app.router.add_route('POST', '/', lambda request, bot=bot, **kwargs: (
         sys.modules[__name__]._handle_request(bot, request, **kwargs)
     ))  # Allow for hot-reloading to change outout.
     try:
@@ -53,11 +53,11 @@ async def _handle_request(bot, request, **kwargs):
     payload = await request.json()
 
     try:
-        repo_id = str(payload['respository']['id'])
+        repo_id = str(payload['repository']['id'])
         cfgs = config['github_relay']['relays'][repo_id]
     except KeyError:
         logger.info('GitHub request\'s repository is not tracked, ignoring.')
-        return web.Response('Untracked responsitory.', status=500)
+        return web.Response(body='Untracked repository.', status=500)
     else:
         logger.info('Event for repository {payload["repository"]["name"]}.')
 
@@ -65,22 +65,27 @@ async def _handle_request(bot, request, **kwargs):
         event_handler = events[request.headers['X-Github-Event']]
     except KeyError:
         logger.info('GitHub request\'s event is unsupported, ignoring.')
-        return web.Response('Unsupported event.', status=500)
+        return web.Response(body='Unsupported event.', status=500)
 
     for cfg in cfgs:
         asyncio.ensure_future(
             event_handler(_get_listener(bot, cfg['listener']), payload, cfg)
         )
 
+    return web.Response(body='Received.')
+
 
 def _check_signature(payload, headers):
     try:
         expected_sig = hmac.new(
-            key=bytes(config['github_relay']['secret'], 'utf-8'),
-            msg=payload,
+            key=config['github_relay']['secret'].encode(),
+            msg=payload.encode(),
             digestmod=hashlib.sha1,
         ).hexdigest()
-        return hmac.compare_digest(expected_sig, headers['X-Hub-Signature'])
+        return hmac.compare_digest(
+            f'sha1={expected_sig}',
+            headers['X-Hub-Signature'],
+        )
     except KeyError:
         pass
     return False
@@ -142,7 +147,11 @@ async def _handle_push(listener, payload, cfg):
         )
         for commit in payload['commits']:
             embed.add_field(
-                value=construct_commit_message(commit),
+                name=(
+                    f'{commit["author"]["username"]} - '
+                    + commit["url"].replace(commit["id"], commit["id"][:8])
+                ),
+                value=_trim_message(commit["message"]),
                 inline=False,
             )
         await listener.message(
