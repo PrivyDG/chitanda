@@ -9,9 +9,10 @@ def load_commands(bot):
     for name in _get_module_names():
         if not _is_module_enabled(name) and name in sys.modules:
             del sys.modules[name]
-        importlib.import_module(name)
-        if hasattr(sys.modules[name], 'setup'):
-            sys.modules[name].setup(bot)
+        else:
+            importlib.import_module(name)
+            if hasattr(sys.modules[name], 'setup'):
+                sys.modules[name].setup(bot)
 
 
 def reload_commands():
