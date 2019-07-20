@@ -63,8 +63,7 @@ class Snowball:
             if not message.startswith(config['trigger_character']):
                 return
 
-            trigger = message.split(' ', 1)[0].lower()[1:]
-            trigger, message = self._resolve_trigger_alias(trigger, message)
+            trigger, message = self._resolve_alias(*message[1:].split(' ', 1))
             command = self.commands[trigger]
         except (IndexError, KeyError):
             return
@@ -72,12 +71,7 @@ class Snowball:
         logger.info(f'Command triggered: {trigger}.')
         try:
             response = command.call(
-                self,
-                listener,
-                target,
-                author,
-                message.split(' ', 1)[1] if ' ' in message else '',
-                private,
+                self, listener, target, author, message, private,
             )
         except BotError as e:
             logger.info(f'Error triggered by {author}: {e}.')
@@ -89,9 +83,9 @@ class Snowball:
         if response:
             await self._send_response(listener, target, response)
 
-    def _resolve_trigger_alias(self, trigger, message):
+    def _resolve_alias(self, trigger, message=''):
         try:
-            return (config['aliases'][trigger] + message).split(' ', 1)
+            return (f'{config["aliases"][trigger]} {message}').split(' ', 1)
         except KeyError:
             return trigger, message
 

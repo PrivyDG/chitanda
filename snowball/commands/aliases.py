@@ -15,7 +15,7 @@ def call(bot, listener, target, author, message, private):
         for alias, command in sorted(config['aliases'].items()):
             embed.add_field(
                 name=f'{config["trigger_character"]}{alias}',
-                value=f'{config["trigger_character"]}{command}'
+                value=f'{config["trigger_character"]}{command}',
                 inline=False,
             )
 
