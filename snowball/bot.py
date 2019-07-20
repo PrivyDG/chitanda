@@ -63,8 +63,9 @@ class Snowball:
             if not message.startswith(config['trigger_character']):
                 return
 
-            trigger = message.split(' ', 1)[0].lower()
-            command = self.commands[trigger[1:]]
+            trigger = message.split(' ', 1)[0].lower()[1:]
+            trigger, message = self._resolve_trigger_alias(trigger, message)
+            command = self.commands[trigger]
         except (IndexError, KeyError):
             return
 
@@ -87,6 +88,12 @@ class Snowball:
 
         if response:
             await self._send_response(listener, target, response)
+
+    def _resolve_trigger_alias(self, trigger, message):
+        try:
+            return (config['aliases'][trigger] + message).split(' ', 1)
+        except KeyError:
+            return trigger, message
 
     async def _send_response(self, listener, target, response):
         if isinstance(response, GeneratorType):

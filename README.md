@@ -27,6 +27,8 @@ The fields in the config file are as follows:
 - `discord_token` - The token of a discord bot. This can be generated in the
   discord developer portal.
 - `modules_enabled` - Modules to enable. Leave blank to enable all.
+- `aliases` - A dictionary of trigger aliases mapping custom triggers to the
+  triggers supported by the bot. Do not include the trigger character.
 - `admins` - A list of bot admins. The admins have access to commands that
   others don't have access to. It is configured as a dictionary mapping an
   identifier of the service ("DiscordListener" for Discord and
@@ -39,28 +41,25 @@ Example configuration:
 
 ```json
 {
-    "trigger_character": "!",
-    "irc_servers": {
-        "irc.freenode.net": {
-            "port": "6697",
-            "tls": true,
-            "tls_verify": false,
-            "nickname": "snowball",
-            "perform": [
-                "NICKSERV IDENTIFY i_throw_snowballs"
-            ]
-        }
-    },
-    "discord_token": "sample",
-    "modules_enabled": [],
-    "admins": {
-        "DiscordListener": [
-            "111111111111111111"
-        ],
-        "IRCListener@irc.freenode.net": [
-            "ballsnow"
-        ]
+  "trigger_character": "!",
+  "irc_servers": {
+    "irc.freenode.net": {
+      "port": "6697",
+      "tls": true,
+      "tls_verify": false,
+      "nickname": "snowball",
+      "perform": ["NICKSERV IDENTIFY i_throw_snowballs"]
     }
+  },
+  "discord_token": "sample",
+  "modules_enabled": [],
+  "aliases": {
+    "j": "join"
+  },
+  "admins": {
+    "DiscordListener": ["111111111111111111"],
+    "IRCListener@irc.freenode.net": ["ballsnow"]
+  }
 }
 ```
 
@@ -94,19 +93,19 @@ file.
 
 ```json
 "github_relay": {
-    "port": 38428,
-    "secret": null,
-    "relays": {
-        "1": [
-            {
-                "listener": "Discord",
-                "channel": "12345",
-                "branches": [
-                    "master"
-                ]
-            }
+  "port": 38428,
+  "secret": null,
+  "relays": {
+    "1": [
+      {
+        "listener": "Discord",
+        "channel": "12345",
+        "branches": [
+          "master"
         ]
-    }
+      }
+    ]
+  }
 }
 ```
 
@@ -117,6 +116,7 @@ No commands
 Send a private message with all bot commands to any user who types !help.
 
 Commands:
+
 ```
 help  // triggers the private message
 ```
@@ -128,6 +128,7 @@ which channels the bot was in prior to quitting, handling channel rejoins after
 the bot reconnects. Admin only.
 
 Commands:
+
 ```
 join #channel
 part  // parts current channel
@@ -140,6 +141,7 @@ Hot reloads the bot's config and modules. Will handle changes in the bot's
 configuration of enabled modules. Admin only.
 
 Commands:
+
 ```
 reload  // triggers the reload
 ```

@@ -11,6 +11,7 @@ BLANK_CONFIG = {
     'irc_servers': {},
     'discord_token': '',
     'modules_enabled': [],
+    'aliases': {},
     'admins': {},
 }
 
