@@ -2,14 +2,15 @@ import logging
 
 from snowball.commands import load_commands
 from snowball.config import config
-from snowball.util import admin_only, register
+from snowball.util import admin_only, register, args
 
 logger = logging.getLogger(__name__)
 
 
 @register('reload')
 @admin_only
-async def call(bot, listener, target, author, message, private):
+@args(r'$')
+async def call(bot, listener, target, author, args, private):
     """Hot reload the bot's config and modules."""
     try:
         config.reload()
@@ -18,7 +19,7 @@ async def call(bot, listener, target, author, message, private):
         return 'Error reloading config.'
 
     try:
-        load_commands(bot)
+        load_commands(bot, run_setup=False)
     except Exception as e:  # noqa: E203
         logger.error(f'Error reloading commands: {e}')
         return 'Error reloading commands.'

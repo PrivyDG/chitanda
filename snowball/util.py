@@ -1,8 +1,14 @@
+import asyncio
 import functools
 import re
 import sys
+from types import AsyncGeneratorType
 
 from snowball import BotError
+
+EVENT_LOOP = asyncio.get_event_loop()
+
+# Duplication of code due to accomodating async generator.
 
 
 def register(trigger):
@@ -17,14 +23,21 @@ def register(trigger):
 def args(*regexes):
     def decorator(func):
         @functools.wraps(func)
-        async def wrapper(bot, listener, target, author, message, private):
+        async def wrapper(bot, listener, target, author, message, *args):
             for regex in regexes:
                 match = re.match(regex, message)
                 if match:
-                    return await func(
-                        bot, listener, target, author, match.groups(), private
+                    response = func(
+                        bot, listener, target, author, match.groups(), *args
                     )
-            raise BotError('Invalid arguments.')
+                    if isinstance(response, AsyncGeneratorType):
+                        async for r in response:
+                            yield r
+                    else:
+                        yield await response
+                    break
+            else:
+                raise BotError('Invalid arguments.')
 
         return wrapper
 
@@ -35,10 +48,37 @@ def admin_only(func):
     setattr(func, 'admin_only', True)
 
     @functools.wraps(func)
+    async def wrapper(bot, listener, target, author, *args):
+        if not await listener.is_admin(author):
+            raise BotError('Unauthorized.')
+
+        response = func(bot, listener, target, author, *args)
+        if isinstance(response, AsyncGeneratorType):
+            async for r in response:
+                yield r
+        else:
+            yield await response
+
+    return wrapper
+
+
+def auth_only(func):
+    setattr(func, 'auth_only', True)
+
+    @functools.wraps(func)
     async def wrapper(bot, listener, target, author, message, private):
-        if await listener.is_admin(author):
-            return await func(bot, listener, target, author, message, private)
-        raise BotError('Unauthorized.')
+        username = await listener.is_authed(author)
+        if not username:
+            raise BotError('Identify with NickServ to use this command.')
+
+        response = func(
+            bot, listener, target, author, message, private, username
+        )
+        if isinstance(response, AsyncGeneratorType):
+            async for r in response:
+                yield r
+        else:
+            yield await response
 
     return wrapper
 
@@ -47,10 +87,16 @@ def channel_only(func):
     setattr(func, 'channel_only', True)
 
     @functools.wraps(func)
-    async def wrapper(bot, listener, target, author, message, private):
-        if not private:
-            return await func(bot, listener, target, author, message, private)
-        raise BotError('This command can only be run in a channel.')
+    async def wrapper(bot, listener, target, author, message, private, *args):
+        if private:
+            raise BotError('This command can only be run in a channel.')
+
+        response = func(bot, listener, target, author, message, private, *args)
+        if isinstance(response, AsyncGeneratorType):
+            async for r in response:
+                yield r
+        else:
+            yield await response
 
     return wrapper
 
@@ -59,10 +105,18 @@ def private_message_only(func):
     setattr(func, 'private_message_only', True)
 
     @functools.wraps(func)
-    async def wrapper(bot, listener, target, author, message, private):
-        if private:
-            return await func(bot, listener, target, author, message, private)
-        raise BotError('This command can only be run in a private message.')
+    async def wrapper(bot, listener, target, author, message, private, *args):
+        if not private:
+            raise BotError(
+                'This command can only be run in a private message.'
+            )
+
+        response = func(bot, listener, target, author, message, private, *args)
+        if isinstance(response, AsyncGeneratorType):
+            async for r in response:
+                yield r
+        else:
+            yield await response
 
     return wrapper
 
@@ -72,15 +126,27 @@ def allowed_listeners(*listeners):
         setattr(func, 'listeners', {l.value for l in listeners})
 
         @functools.wraps(func)
-        async def wrapper(bot, listener, target, author, message, private):
+        async def wrapper(bot, listener, *args):
             if not listeners:
-                return func(bot, listener, target, author, message, private)
+                response = func(bot, listener, *args)
+                if isinstance(response, AsyncGeneratorType):
+                    async for r in response:
+                        yield r
+                else:
+                    yield await response
+                return
+
             for l in listeners:
                 if isinstance(listener, l.value):
-                    return await func(
-                        bot, listener, target, author, message, private
-                    )
-            raise BotError('This command cannot be run on this listener.')
+                    response = func(bot, listener, *args)
+                    if isinstance(response, AsyncGeneratorType):
+                        async for r in response:
+                            yield r
+                    else:
+                        yield await response
+                    break
+            else:
+                raise BotError('This command cannot be run on this listener.')
 
         return wrapper
 

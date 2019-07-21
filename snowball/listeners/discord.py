@@ -62,3 +62,6 @@ class DiscordListener(discord.Client):
 
     async def is_admin(self, user):
         return str(user) in config['admins'].get(str(self), [])
+
+    async def is_authed(self, user):
+        return user

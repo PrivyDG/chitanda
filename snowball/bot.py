@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from types import GeneratorType
+from types import AsyncGeneratorType, GeneratorType
 
 from snowball import BotError
 from snowball.commands import load_commands
@@ -69,19 +69,15 @@ class Snowball:
             return
 
         logger.info(f'Command triggered: {trigger}.')
+        response = command.call(
+            self, listener, target, author, message, private,
+        )
         try:
-            response = await command.call(
-                self, listener, target, author, message, private,
-            )
+            if response:
+                await self._send_response(listener, target, response)
         except BotError as e:
             logger.info(f'Error triggered by {author}: {e}.')
-            response = {
-                'target': target,
-                'message': f'Error: {e}',
-            }
-
-        if response:
-            await self._send_response(listener, target, response)
+            await listener.message(target, f'Error: {e}')
 
     def _resolve_alias(self, trigger, message=''):
         try:
@@ -90,15 +86,25 @@ class Snowball:
             return trigger, message
 
     async def _send_response(self, listener, target, response):
+        if isinstance(response, AsyncGeneratorType):
+            logger.info('AsyncGenerator response received, sending to target.')
+            async for resp in response:
+                await listener.message(**self._package_response(resp, target))
+            return
+
+        response = await response
         if isinstance(response, GeneratorType):
-            logger.info('Response received as generator, sending to target.')
+            logger.info('Generator response received, sending to target.')
             for resp in response:
-                if not isinstance(resp, dict):
-                    resp = {'target': target, 'message': str(resp)}
-                await listener.message(**resp)
+                await listener.message(**self._package_response(resp, target))
         elif isinstance(response, dict):
-            logger.info('Response received as dict, sending to target.')
+            logger.info('Dict response received, sending to target.')
             await listener.message(**response)
         else:
-            logger.info('Response received as str, sending to target.')
+            logger.info('Str response received, sending to target.')
             await listener.message(target, str(response))
+
+    def _package_response(self, resp, target):
+        if not isinstance(resp, dict):
+            resp = {'target': target, 'message': str(resp)}
+        return resp

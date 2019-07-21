@@ -75,7 +75,7 @@ class IRCListener(
             )
 
     async def on_raw(self, message):
-        logger.info(f'Received raw IRC message: {message}')
+        logger.info(f'Received raw IRC message: {message}'.rstrip())
         await super().on_raw(message)
 
     async def is_admin(self, user):
@@ -84,3 +84,7 @@ class IRCListener(
             info['identified'] and
             info['account'] in config['admins'].get(str(self), [])
         )
+
+    async def is_authed(self, user):
+        info = await self.whois(user)
+        return info['identified'] and info['account']

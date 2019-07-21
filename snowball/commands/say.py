@@ -1,7 +1,8 @@
-from snowball.util import register
+from snowball.util import register, args
 
 
 @register('say')
-async def call(bot, listener, target, author, message, private):
+@args(r'(.+)')
+async def call(bot, listener, target, author, args, private):
     """Repeats whatever the command was followed by."""
-    return message
+    return args[0]
