@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class IRCListener(
     pydle.Client,
+    pydle.features.AccountSupport,
     pydle.features.TLSSupport,
     pydle.features.RFC1459Support,
 ):
@@ -74,5 +75,12 @@ class IRCListener(
             )
 
     async def on_raw(self, message):
-        logger.debug(f'Received raw IRC message: {message}')
+        logger.info(f'Received raw IRC message: {message}')
         await super().on_raw(message)
+
+    async def is_admin(self, user):
+        info = await self.whois(user)
+        return (
+            info['identified'] and
+            info['account'] in config['admins'].get(str(self), [])
+        )

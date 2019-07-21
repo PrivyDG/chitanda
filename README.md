@@ -34,8 +34,8 @@ The fields in the config file are as follows:
   identifier of the service ("DiscordListener" for Discord and
   "IRCListener@{hostname}" for IRC) to a list of administrator names. For
   Discord, the unique account identifier is used, which can be copied
-  after enabling Developer mode in the Discord client. For IRC, the nickname is
-  used.
+  after enabling Developer mode in the Discord client. For IRC, the NickServ
+  account name is used.
 
 Example configuration:
 

@@ -70,7 +70,7 @@ class Snowball:
 
         logger.info(f'Command triggered: {trigger}.')
         try:
-            response = command.call(
+            response = await command.call(
                 self, listener, target, author, message, private,
             )
         except BotError as e:

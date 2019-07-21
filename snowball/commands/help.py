@@ -8,7 +8,7 @@ from snowball.util import register
 
 
 @register('help')
-def call(bot, listener, target, author, message, private):
+async def call(bot, listener, target, author, message, private):
     """Sends a private message detailing the available commands."""
     if isinstance(listener, DiscordListener):
         embed = Embed(title='Help!')
