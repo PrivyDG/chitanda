@@ -73,6 +73,17 @@ $ snowball
 
 ## Modules
 
+### Aliases (`aliases`)
+
+This module allows users to trigger a PM containing the list of aliases
+specified in the bot's configuration.
+
+Commands:
+
+```
+aliases  // sends the list of aliases to the user via PM
+```
+
 ### GitHub Relay (`github_relay`)
 
 This module allows the bot to receive GitHub webhooks and report push, issue,
@@ -144,4 +155,14 @@ Commands:
 
 ```
 reload  // triggers the reload
+```
+
+### Say (`say`)
+
+The bot parrots your message back to you.
+
+Commands:
+
+```
+say <message>  // bot says the message
 ```
