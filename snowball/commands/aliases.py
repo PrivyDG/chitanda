@@ -1,5 +1,3 @@
-import inspect
-
 from discord import Embed
 
 from snowball.config import config
@@ -8,7 +6,7 @@ from snowball.util import register
 
 
 @register('aliases')
-def call(bot, listener, target, author, message, private):
+async def call(bot, listener, target, author, message, private):
     """Sends a private message detailing the command aliases."""
     if isinstance(listener, DiscordListener):
         embed = Embed(title='Aliases')
@@ -28,12 +26,13 @@ def call(bot, listener, target, author, message, private):
     return _generate_alias_lines(bot, author, listener)
 
 
-def _generate_aliases_lines(bot, author, listener):
+def _generate_alias_lines(bot, author, listener):
+    yield 'Alias list:'
     for alias, command in sorted(config['aliases'].items()):
         yield {
             'target': author,
-            message: (
-                f'{config["trigger_character"]}{alias} -->',
+            'message': (
+                f'{config["trigger_character"]}{alias} --> '
                 f'{config["trigger_character"]}{command}'
             ),
         }
