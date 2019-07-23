@@ -68,7 +68,7 @@ Example configuration:
 ```bash
 $ cd snowball
 $ source .venv/bin/activate
-$ snowball
+$ snowball run
 ```
 
 ## Modules
