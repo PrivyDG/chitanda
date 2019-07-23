@@ -8,7 +8,7 @@ from snowball.util import admin_only, allowed_listeners, args, register
 @register('part')
 @allowed_listeners(Listeners.IRC)
 @admin_only
-@args(r'$', r'([#&][^\x07\x2C\s]{,199})')
+@args(r'$', r'([#&][^\x07\x2C\s]{,199})$')
 async def call(bot, listener, target, author, args, private):
     """Part a channel."""
     if args:
