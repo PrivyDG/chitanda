@@ -227,7 +227,7 @@ To enable this command, a configuration section must be added to the config,
 per the following:
 
 ```json
-"wolfram_alpha": {
+"wolframalpha": {
   "appid": "your api key goes here"
 }
 ```
