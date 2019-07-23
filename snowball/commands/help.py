@@ -4,7 +4,7 @@ from discord import Embed
 
 from snowball.config import config
 from snowball.listeners import DiscordListener
-from snowball.util import register, args
+from snowball.util import args, register
 
 
 @register('help')

@@ -19,6 +19,7 @@ pydle = "^0.9.1"
 click = "^7.0"
 appdirs = "^1.4"
 aiohttp = "^3.5"
+requests = "^2.22"
 
 [tool.poetry.dev-dependencies]
 poetry-setup = "^0.3.6"

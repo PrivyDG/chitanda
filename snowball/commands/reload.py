@@ -2,7 +2,7 @@ import logging
 
 from snowball.commands import load_commands
 from snowball.config import config
-from snowball.util import admin_only, register, args
+from snowball.util import admin_only, args, register
 
 logger = logging.getLogger(__name__)
 

@@ -73,6 +73,10 @@ $ snowball
 
 ## Modules
 
+Note: All module-specific configuration sections should be added to the
+top-level dictionary of the JSON, on the same level as the `trigger_character`
+and `aliases`.
+
 ### Aliases (`aliases`)
 
 This module allows users to trigger a PM containing the list of aliases
@@ -146,6 +150,22 @@ part  // parts current channel
 part #channel
 ```
 
+### Quotes (`quotes`)
+
+Allows users to store and fetch quotes of messages to and from the bot's
+database. Quotes are stored separately for each channel. Deletion of quotes is
+admin only.
+
+Commands:
+
+```
+quote  // fetches a random quote
+quote <quote id> <quote id> <quote id>  // fetches quotes by ID (max: 3)
+addquote <quote>  // adds a quote
+delquote <quote id>  // delets a quote
+findquote <string>  // searches for a quote from its contents
+```
+
 ### Reload (`reload`)
 
 Hot reloads the bot's config and modules. Will handle changes in the bot's
@@ -154,7 +174,7 @@ configuration of enabled modules. Admin only.
 Commands:
 
 ```
-reload  // triggers the reload
+reload // triggers the reload
 ```
 
 ### Say (`say`)
@@ -164,5 +184,25 @@ The bot parrots your message back to you.
 Commands:
 
 ```
-say <message>  // bot says the message
+say <message> // bot says the message
+```
+
+### WolframAlpha (`wolframalpha`)
+
+Allows basic queries and answer fetching to the WolframAlpha API. Useful for
+math and weather, among other things.
+
+To enable this command, a configuration section must be added to the config,
+per the following:
+
+```
+"wolfram_alpha": {
+  "appid": "your api key goes here"
+}
+```
+
+Commands:
+
+```
+wolframalpha <query>  // fetches wolframalpha's response to the query
 ```

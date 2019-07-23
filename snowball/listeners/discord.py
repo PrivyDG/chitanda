@@ -3,6 +3,7 @@ from collections import defaultdict, deque
 from functools import partial
 
 import discord
+
 from snowball.config import config
 
 logger = logging.getLogger(__name__)

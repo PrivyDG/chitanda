@@ -1,4 +1,4 @@
-from snowball.util import register, args
+from snowball.util import args, register
 
 
 @register('say')

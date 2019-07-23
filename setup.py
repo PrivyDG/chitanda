@@ -52,6 +52,7 @@ setup(
         'click (>=7.0,<8.0)',
         'appdirs (>=1.4,<2.0)',
         'aiohttp (>=3.5,<4.0)',
+        'requests (>=2.22,<3.0)',
     ],  # Optional
     # https://setuptools.readthedocs.io/en/latest/setuptools.html#dependencies-that-aren-t-in-pypi
     dependency_links=[],  # Optional
