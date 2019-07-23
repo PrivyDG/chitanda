@@ -187,6 +187,17 @@ Commands:
 say <message> // bot says the message
 ```
 
+### UrbanDictionary (`urbandictionary`)
+
+Allows queries to the UrbanDictionary API and relaying of definitions.
+
+Commands:
+
+```
+urbandictionary <string>  // fetches top definition for string
+urbandictionary <number> <string>  // fetches <number> ranked definition
+```
+
 ### WolframAlpha (`wolframalpha`)
 
 Allows basic queries and answer fetching to the WolframAlpha API. Useful for
