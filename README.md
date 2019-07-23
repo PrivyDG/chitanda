@@ -150,6 +150,26 @@ part  // parts current channel
 part #channel
 ```
 
+### Last.FM (`lastfm`)
+
+Fetches a user's now playing track from Last.FM.
+
+Requires the following addition to the config:
+
+```json
+"lastfm": {
+  "api_key": "your api key"
+}
+```
+
+Commands:
+
+```
+nowplaying  // fetches and relays your now playing track
+setplaying <lastfm username>  // sets the lastfm account to fetch from
+unsetplaying  // unsets your lastfm username
+```
+
 ### Quotes (`quotes`)
 
 Allows users to store and fetch quotes of messages to and from the bot's
@@ -206,7 +226,7 @@ math and weather, among other things.
 To enable this command, a configuration section must be added to the config,
 per the following:
 
-```
+```json
 "wolfram_alpha": {
   "appid": "your api key goes here"
 }
