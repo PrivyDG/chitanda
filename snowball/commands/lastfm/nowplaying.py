@@ -150,5 +150,5 @@ def _format_response(author, track, album, artist, tags, time_since):
     if tags:
         response += f' [tags: {" / ".join(tags)}]'
     if time_since:
-        response += f' (scrobbled {time_since})'
+        response += f' (scrobbled {time_since} ago)'
     return response
