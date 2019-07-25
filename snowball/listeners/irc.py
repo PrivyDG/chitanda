@@ -15,6 +15,11 @@ class IRCListener(
     pydle.features.RFC1459Support,
 ):
 
+    message_handlers = {
+        'channel': [],
+        'pm': [],
+    }
+
     def __init__(self, bot, nickname, hostname):
         self.bot = bot
         self.hostname = hostname
@@ -56,6 +61,8 @@ class IRCListener(
 
     async def on_channel_message(self, target, by, message):
         if by != self.nickname:
+            for handler in self.message_handlers['channel']:
+                await handler(self, target, by, message)
             await self.bot.dispatch_command(
                 self,
                 target,
@@ -66,6 +73,8 @@ class IRCListener(
 
     async def on_private_message(self, target, by, message):
         if by != self.nickname:
+            for handler in self.message_handlers['pm']:
+                await handler(self, target, by, message)
             await self.bot.dispatch_command(
                 self,
                 by,

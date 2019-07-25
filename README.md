@@ -209,6 +209,13 @@ Commands:
 say <message> // bot says the message
 ```
 
+### Titles (`titles`)
+
+The bot will print the <title> tag of URLs messaged to the channel. This
+module listens only on IRC.
+
+No commands.
+
 ### UrbanDictionary (`urbandictionary`)
 
 Allows queries to the UrbanDictionary API and relaying of definitions.

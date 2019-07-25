@@ -16,22 +16,19 @@ TITLE_REGEX = re.compile(r'<title>(.*?)</title>')
 def setup(bot):
     from snowball.bot import IRCListener
 
-    async def on_channel_message(self, target, by, message):
-        if by != self.nickname:
-            matches = URL_REGEX.search(message)
-            if matches:
-                for match in matches.groups():
-                    try:
-                        title = await _get_title(match)
-                    except (requests.RequestException, UnicodeDecodeError):
-                        continue
+    async def title_handler(listener, target, by, message):
+        matches = URL_REGEX.search(message)
+        if matches:
+            for match in matches.groups():
+                try:
+                    title = await _get_title(match)
+                except (requests.RequestException, UnicodeDecodeError):
+                    continue
 
-                    if title:
-                        await self.message(target, title)
+                if title:
+                    await listener.message(target, title)
 
-        await super(IRCListener, self).on_channel_message(target, by, message)
-
-    IRCListener.on_channel_message = on_channel_message
+    IRCListener.message_handlers['channel'].append(title_handler)
 
 
 async def _get_title(url):

@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 class DiscordListener(discord.Client):
 
+    message_handlers = []
+
     def __init__(self, bot):
         self.bot = bot
         self.message_lock = defaultdict(lambda: False)
@@ -53,6 +55,8 @@ class DiscordListener(discord.Client):
 
     async def on_message(self, message):
         if not message.author.bot:
+            for handler in self.message_handlers:
+                await handler(self, message)
             await self.bot.dispatch_command(
                 self,
                 message.channel.id,
