@@ -5,7 +5,7 @@ from json import JSONDecodeError
 
 import requests
 
-from snowball import USER_AGENT, BotError
+from snowball import BotError
 from snowball.config import config
 from snowball.database import database
 from snowball.util import args, auth_only, register
@@ -52,7 +52,7 @@ async def _get_now_playing(lastfm, author=None):
         response = (await asyncio.get_event_loop().run_in_executor(
             None, lambda: requests.get(
                 API_URL,
-                headers={'User-Agent': USER_AGENT},
+                headers={'User-Agent': config['user_agent']},
                 params={
                     'method': 'user.getrecenttracks',
                     'api_key': config['lastfm']['api_key'],
@@ -119,7 +119,7 @@ async def _get_track_tags(track, album, artist):
         asyncio.get_event_loop().run_in_executor(
             None, lambda: requests.get(
                 API_URL,
-                headers={'User-Agent': USER_AGENT},
+                headers={'User-Agent': config['user_agent']},
                 params={
                     'api_key': config['lastfm']['api_key'],
                     'format': 'json',

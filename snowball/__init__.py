@@ -21,8 +21,6 @@ handler.setFormatter(formatter)
 
 logger.addHandler(handler)
 
-USER_AGENT = 'snowball irc and discord bot'
-
 DATA_DIR = Path(user_data_dir('snowball', 'dazzler'))
 DATABASE_PATH = DATA_DIR / 'db.sqlite3'
 CONFIG_PATH = DATA_DIR / 'config.json'

@@ -3,7 +3,7 @@ import logging
 
 import requests
 
-from snowball import USER_AGENT, BotError
+from snowball import BotError
 from snowball.config import config
 from snowball.util import args, register
 
@@ -17,7 +17,7 @@ async def call(bot, listener, target, author, args, private):
     future = asyncio.get_event_loop().run_in_executor(
         None, lambda: requests.get(
             'https://api.wolframalpha.com/v1/result',
-            headers={'User-Agent': USER_AGENT},
+            headers={'User-Agent': config['user_agent']},
             params={
                 'appid': config['wolframalpha']['appid'],
                 'i': args[0],

@@ -19,6 +19,7 @@ $ snowball config  # See next section in README.
 The fields in the config file are as follows:
 
 - `trigger_character` - The character that precedes all commands.
+- `user_agent` - User Agent to use when making HTTP requests.
 - `irc_servers` - A dictionary of IRC servers to connect to, mapping the
   hostname to another dictionary containing information about the server. The
   specific keys available can be found in the example configuration below. The
@@ -42,6 +43,7 @@ Example configuration:
 ```json
 {
   "trigger_character": "!",
+  "user_agent": "snowball irc/discord bot",
   "irc_servers": {
     "irc.freenode.net": {
       "port": "6697",

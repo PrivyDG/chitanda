@@ -5,7 +5,8 @@ from json import JSONDecodeError
 
 import requests
 
-from snowball import USER_AGENT, BotError
+from snowball import BotError
+from snowball.config import config
 from snowball.util import args, register
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ async def call(bot, listener, target, author, args, private):
     future = asyncio.get_event_loop().run_in_executor(
         None, lambda: requests.get(
             'https://api.urbandictionary.com/v0/define',
-            headers={'User-Agent': USER_AGENT},
+            headers={'User-Agent': config['user_agent']},
             params={'term': search},
             timeout=15,
         )

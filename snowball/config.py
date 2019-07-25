@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 BLANK_CONFIG = {
     'trigger_character': '!',
+    'user_agent': 'snowball irc/discord bot',
     'irc_servers': {},
     'discord_token': '',
     'modules_enabled': [],
