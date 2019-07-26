@@ -6,6 +6,7 @@ import re
 import requests
 
 from snowball.config import config
+from snowball.listeners import IRCListener
 
 logger = logging.getLogger(__name__)
 
@@ -14,21 +15,24 @@ TITLE_REGEX = re.compile(r'<title>(.*?)</title>')
 
 
 def setup(bot):
-    from snowball.bot import IRCListener
+    async def title_handler(listener, target, author, message, private):
+        if isinstance(listener, IRCListener) and not private:
+            matches = URL_REGEX.search(message)
+            if matches:
+                for match in matches.groups():
+                    try:
+                        title = await _get_title(match)
+                    except (requests.RequestException, UnicodeDecodeError):
+                        continue
 
-    async def title_handler(listener, target, by, message):
-        matches = URL_REGEX.search(message)
-        if matches:
-            for match in matches.groups():
-                try:
-                    title = await _get_title(match)
-                except (requests.RequestException, UnicodeDecodeError):
-                    continue
+                    if title:
+                        logger.info(
+                            f'Title found from {match} in {target} '
+                            f'from {listener}'
+                        )
+                        await listener.message(target, title)
 
-                if title:
-                    await listener.message(target, title)
-
-    IRCListener.message_handlers['channel'].append(title_handler)
+    bot.message_handlers.append(title_handler)
 
 
 async def _get_title(url):

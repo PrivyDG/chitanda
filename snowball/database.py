@@ -96,7 +96,7 @@ with database() as (conn, cursor):
             """
             CREATE TABLE versions (
                 source TEXT,
-                version INT,
+                version INTEGER,
                 PRIMARY KEY (source, version)
             )
             """

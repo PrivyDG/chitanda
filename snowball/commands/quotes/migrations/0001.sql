@@ -1,5 +1,5 @@
 CREATE TABLE quotes (
-    id INT,
+    id INTEGER,
     channel TEXT,
     listener TEXT,
     quote TEXT NOT NULL COLLATE NOCASE,

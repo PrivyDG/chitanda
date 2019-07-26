@@ -61,27 +61,27 @@ class IRCListener(
 
     async def on_channel_message(self, target, by, message):
         if by != self.nickname:
-            for handler in self.message_handlers['channel']:
-                await handler(self, target, by, message)
-            await self.bot.dispatch_command(
-                self,
-                target,
-                by,
-                message,
-                private=False,
-            )
+            args = {
+                'listener': self,
+                'target': target,
+                'author': by,
+                'message': message,
+                'private': False,
+            }
+            await self.bot.handle_message(**args)
+            await self.bot.dispatch_command(**args)
 
     async def on_private_message(self, target, by, message):
         if by != self.nickname:
-            for handler in self.message_handlers['pm']:
-                await handler(self, target, by, message)
-            await self.bot.dispatch_command(
-                self,
-                by,
-                by,
-                message,
-                private=True,
-            )
+            args = {
+                'listener': self,
+                'target': by,
+                'author': by,
+                'message': message,
+                'private': True,
+            }
+            await self.bot.handle_message(**args)
+            await self.bot.dispatch_command(**args)
 
     async def on_raw(self, message):
         logger.info(f'Received raw IRC message: {message}'.rstrip())

@@ -1,6 +1,13 @@
 # snowball
 
-An IRC & Discord bot. Requires Python 3.7.
+An extensible IRC & Discord bot. Requires Python 3.7.
+
+## Table of Contents
+
+- [Setup](#setup)
+- [Configuration](#configuration)
+- [Running](#running)
+- [Modules](#modules)
 
 ## Setup
 
@@ -78,6 +85,19 @@ $ snowball run
 Note: All module-specific configuration sections should be added to the
 top-level dictionary of the JSON, on the same level as the `trigger_character`
 and `aliases`.
+
+- [Aliases](#aliases-aliases)
+- [GitHub Relay](#github-relay-github_relay)
+- [Help](#help-help)
+- [IRC Channels](#irc-channels-irc_channels)
+- [Last.FM](#lastfm-lastfm)
+- [Quotes](#quotes-quotes)
+- [Reload](#reload-reload)
+- [Say](#say-say)
+- [Tell](#tell-tell)
+- [Titles](#titles-titles)
+- [UrbanDictionary](#urbandictionary-urbandictionary)
+- [WolframAlpha](#wolframalpha-wolframalpha)
 
 ### Aliases (`aliases`)
 
@@ -207,6 +227,18 @@ Commands:
 
 ```
 say <message> // bot says the message
+```
+
+### Tell (`tell`)
+
+Allow for messages to be stored and relayed to users who are not currently
+online. If on IRC, they will only receive the message if they are authenticated
+with NickServ.
+
+Commands:
+
+```
+tell <user> <message> // store a message to be relayed to user
 ```
 
 ### Titles (`titles`)

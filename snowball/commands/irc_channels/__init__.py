@@ -37,6 +37,8 @@ def _add_handlers_to_irc_listener():
 
         await super(IRCListener, self).on_join(channel, user)
 
+    IRCListener.on_join = on_join
+
     async def on_part(self, channel, user, reason):
         if self.is_same_nick(self.nickname, user):
             with database() as (conn, cursor):
@@ -51,7 +53,6 @@ def _add_handlers_to_irc_listener():
 
         await super(IRCListener, self).on_part(channel, user, reason)
 
-    IRCListener.on_join = on_join
     IRCListener.on_part = on_part
 
 

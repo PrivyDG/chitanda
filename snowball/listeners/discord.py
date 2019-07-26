@@ -11,8 +11,6 @@ logger = logging.getLogger(__name__)
 
 class DiscordListener(discord.Client):
 
-    message_handlers = []
-
     def __init__(self, bot):
         self.bot = bot
         self.message_lock = defaultdict(lambda: False)
@@ -55,15 +53,15 @@ class DiscordListener(discord.Client):
 
     async def on_message(self, message):
         if not message.author.bot:
-            for handler in self.message_handlers:
-                await handler(self, message)
-            await self.bot.dispatch_command(
-                self,
-                message.channel.id,
-                message.author.id,
-                message.content,
-                private=isinstance(message.channel, discord.DMChannel),
-            )
+            args = {
+                'listener': self,
+                'target': message.channel.id,
+                'author': message.author.id,
+                'message': message.content,
+                'private': isinstance(message.channel, discord.DMChannel),
+            }
+            await self.bot.handle_message(**args)
+            await self.bot.dispatch_command(**args)
 
     async def is_admin(self, user):
         return str(user) in config['admins'].get(str(self), [])

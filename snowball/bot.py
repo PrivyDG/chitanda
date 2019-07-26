@@ -17,6 +17,7 @@ class Snowball:
     def __init__(self):
         self.irc_listeners = {}
         self.discord_listener = None
+        self.message_handlers = []
         load_commands(self)
 
     def connect(self):
@@ -47,13 +48,12 @@ class Snowball:
         self.discord_listener = DiscordListener(self)
         self.discord_listener.run(config['discord_token'])
 
+    async def handle_message(self, listener, target, author, message, private):
+        for handler in self.message_handlers:
+            await handler(listener, target, author, message, private)
+
     async def dispatch_command(
-        self,
-        listener,
-        target,
-        author,
-        message,
-        private,
+        self, listener, target, author, message, private,
     ):
         logger.info(
             f'Message received on {listener} in channel {target} '
