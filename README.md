@@ -87,6 +87,7 @@ top-level dictionary of the JSON, on the same level as the `trigger_character`
 and `aliases`.
 
 - [Aliases](#aliases-aliases)
+- [Choose](#choose-choose)
 - [GitHub Relay](#github-relay-github_relay)
 - [Help](#help-help)
 - [IRC Channels](#irc-channels-irc_channels)
@@ -108,6 +109,18 @@ Commands:
 
 ```
 aliases  // sends the list of aliases to the user via PM
+```
+
+### Choose (`choose`)
+
+The bot can make a choice for you!
+
+Commands:
+
+```
+choose <#>-<#>  // bot will respond with a number in the given range
+choose word1 word2 word3  // bot will respond with one of the words
+choose phrase1, phrase2, phrase3  // bot will respond with one of the phrases
 ```
 
 ### GitHub Relay (`github_relay`)
@@ -216,7 +229,7 @@ configuration of enabled modules. Admin only.
 Commands:
 
 ```
-reload // triggers the reload
+reload  // triggers the reload
 ```
 
 ### Say (`say`)
@@ -226,7 +239,7 @@ The bot parrots your message back to you.
 Commands:
 
 ```
-say <message> // bot says the message
+say <message>  // bot says the message
 ```
 
 ### Tell (`tell`)
@@ -238,7 +251,7 @@ with NickServ.
 Commands:
 
 ```
-tell <user> <message> // store a message to be relayed to user
+tell <user> <message>  // store a message to be relayed to user
 ```
 
 ### Titles (`titles`)
