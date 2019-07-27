@@ -4,7 +4,6 @@ monkey.patch_all()  # noqa
 
 import logging
 import sys
-from enum import Enum
 from pathlib import Path
 
 import click
@@ -28,7 +27,7 @@ CONFIG_PATH = DATA_DIR / 'config.json'
 
 if not DATA_DIR.is_dir():
     try:
-        DATA_DIR.mkdir(mode=0o700)
+        DATA_DIR.mkdir(mode=0o700, parents=True)
     except OSError:
         logger.critical(f'Could not create data directory ({DATA_DIR}).')
         sys.exit(1)
@@ -36,11 +35,6 @@ if not DATA_DIR.is_dir():
 
 class BotError(Exception):
     pass
-
-
-class Listeners(Enum):
-    IRC = 'IRC'
-    Discord = 'Discord'
 
 
 @click.group()
