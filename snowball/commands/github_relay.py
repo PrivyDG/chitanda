@@ -147,11 +147,11 @@ async def _handle_push(listener, payload, cfg):
         )
         for commit in payload['commits']:
             embed.add_field(
-                name=commit["url"].replace(commit["id"], commit["id"][:8]),
-                value=(
+                name=(
                     f'{commit["author"]["username"]} - '
                     + _trim_message(commit["message"])
                 ),
+                value=commit["url"].replace(commit["id"], commit["id"][:8]),
                 inline=False,
             )
         await listener.message(
