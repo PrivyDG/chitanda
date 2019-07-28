@@ -123,7 +123,7 @@ def private_message_only(func):
 
 def allowed_listeners(*listeners):
     def decorator(func):
-        setattr(func, 'listeners', {l.value for l in listeners})
+        setattr(func, 'listeners', listeners)
 
         @functools.wraps(func)
         async def wrapper(bot, listener, *args):
@@ -136,15 +136,13 @@ def allowed_listeners(*listeners):
                     yield await response
                 return
 
-            for l in listeners:
-                if isinstance(listener, l.value):
-                    response = func(bot, listener, *args)
-                    if isinstance(response, AsyncGeneratorType):
-                        async for r in response:
-                            yield r
-                    else:
-                        yield await response
-                    break
+            if any(isinstance(listener, l) for l in listeners):
+                response = func(bot, listener, *args)
+                if isinstance(response, AsyncGeneratorType):
+                    async for r in response:
+                        yield r
+                else:
+                    yield await response
             else:
                 raise BotError('This command cannot be run on this listener.')
 
