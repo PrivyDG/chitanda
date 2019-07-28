@@ -6,7 +6,7 @@ from snowball.util import args, channel_only, register
 @channel_only
 @args(r'([^ ]+) (.+)')
 async def call(bot, listener, target, author, args, private):
-    """Add a quote to the database."""
+    """Save a message for a user the next time they are seen."""
     with database() as (conn, cursor):
         cursor.execute(
             """
