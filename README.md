@@ -12,7 +12,7 @@ An extensible IRC & Discord bot. Requires Python 3.7.
 ## Setup
 
 ```bash
-$ git clone git@github.com:dzlr/snowball.git
+$ git clone git@github.com:dazuling/snowball.git
 $ cd snowball
 $ python3 -m virtualenv .venv
 $ source .venv/bin/activate
