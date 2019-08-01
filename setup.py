@@ -27,7 +27,7 @@ setup(
     name='snowball',  # Required
     # https://www.python.org/dev/peps/pep-0440/
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0',  # Required
+    version='0.1.1',  # Required
     # https://packaging.python.org/specifications/core-metadata/#summary
     description="An IRC bot framework.",  # Required
     # https://packaging.python.org/specifications/core-metadata/#description-optional
@@ -53,6 +53,7 @@ setup(
         'appdirs (>=1.4,<2.0)',
         'aiohttp (>=3.5,<4.0)',
         'requests (>=2.22,<3.0)',
+        'ircmessage (>=0.1.1,<0.2.0)',
     ],  # Optional
     # https://setuptools.readthedocs.io/en/latest/setuptools.html#dependencies-that-aren-t-in-pypi
     dependency_links=[],  # Optional
