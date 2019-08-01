@@ -256,8 +256,7 @@ s/find/replace  // replace 'find' with 'replace'
 ### Tell (`tell`)
 
 Allow for messages to be stored and relayed to users who are not currently
-online. If on IRC, they will only receive the message if they are authenticated
-with NickServ.
+online.
 
 Commands:
 
