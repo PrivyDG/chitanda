@@ -4,7 +4,7 @@ CREATE TABLE tells (
     listener TEXT NOT NULL,
     message TEXT NOT NULL,
     time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    recipient TEXT NOT NULL,
+    recipient TEXT NOT NULL COLLATE NOCASE,
     sender TEXT NOT NULL,
     PRIMARY KEY (id)
 );

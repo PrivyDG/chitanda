@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 def setup(bot):
     async def tell_handler(listener, target, author, message, private):
-        if not await listener.is_authed(author) or private:
+        if private:
             return
 
         with database() as (conn, cursor):
