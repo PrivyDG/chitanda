@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snowball"
-version = "0.1.0"
+version = "0.1.1"
 description = "An IRC bot framework."
 authors = ["dazzler <dazzler@riseup.net>"]
 license = "Apache-2.0"
@@ -20,6 +20,7 @@ click = "^7.0"
 appdirs = "^1.4"
 aiohttp = "^3.5"
 requests = "^2.22"
+ircmessage = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 poetry-setup = "^0.3.6"

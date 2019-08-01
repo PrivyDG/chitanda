@@ -242,6 +242,17 @@ Commands:
 say <message>  // bot says the message
 ```
 
+### Sed (`sed`)
+
+Sed a previous message from the channel. Up to 1024 messages are saved in the
+history per-channel. Supports case-insensitive `i` and global `g` flags.
+
+Commands:
+
+```
+s/find/replace  // replace 'find' with 'replace'
+```
+
 ### Tell (`tell`)
 
 Allow for messages to be stored and relayed to users who are not currently
@@ -251,7 +262,9 @@ with NickServ.
 Commands:
 
 ```
-tell <user> <message>  // store a message to be relayed to user
+
+tell <user> <message> // store a message to be relayed to user
+
 ```
 
 ### Titles (`titles`)
@@ -268,8 +281,10 @@ Allows queries to the UrbanDictionary API and relaying of definitions.
 Commands:
 
 ```
-urbandictionary <string>  // fetches top definition for string
-urbandictionary <number> <string>  // fetches <number> ranked definition
+
+urbandictionary <string> // fetches top definition for string
+urbandictionary <number> <string> // fetches <number> ranked definition
+
 ```
 
 ### WolframAlpha (`wolframalpha`)
