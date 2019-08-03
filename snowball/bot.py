@@ -1,7 +1,9 @@
 import asyncio
 import logging
+import sys
 from types import AsyncGeneratorType, GeneratorType
 
+from aiohttp import web
 from snowball import BotError
 from snowball.commands import load_commands
 from snowball.config import config
@@ -18,7 +20,24 @@ class Snowball:
         self.irc_listeners = {}
         self.discord_listener = None
         self.message_handlers = []
+        if config['webserver']['enable']:
+            self.web_application = web.Application()
         load_commands(self)
+        if config['webserver']['enable']:
+            self.webserver = self._start_webserver()
+
+    def _start_webserver(self):
+        try:
+            return asyncio.ensure_future(
+                asyncio.get_event_loop().create_server(
+                    self.web_application.make_handler(),
+                    host='0.0.0.0',
+                    port=int(config['webserver']['port']),
+                )
+            )
+        except ValueError:
+            logging.critical('Invalid port value for webserver.')
+            sys.exit(1)
 
     def connect(self):
         logger.info('Initiating connection to listeners.')

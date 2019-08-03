@@ -11,6 +11,10 @@ BLANK_CONFIG = {
     'user_agent': 'snowball irc/discord bot',
     'irc_servers': {},
     'discord_token': '',
+    'webserver': {
+        'enable': False,
+        'port': 38428,
+    },
     'modules_enabled': [],
     'aliases': {},
     'admins': {},

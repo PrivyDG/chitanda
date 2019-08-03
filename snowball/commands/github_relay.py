@@ -6,7 +6,6 @@ import sys
 
 from aiohttp import web
 from discord import Embed
-
 from snowball.config import config
 from snowball.listeners import DiscordListener
 
@@ -14,25 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 def setup(bot):
-    if not hasattr(bot, 'webserver_github'):
-        bot.webserver_github = _create_webserver(bot)
-
-
-def _create_webserver(bot):
-    app = web.Application()
-    app.router.add_route('POST', '/', lambda request, bot=bot, **kwargs: (
-        sys.modules[__name__]._handle_request(bot, request, **kwargs)
-    ))  # Allow for hot-reloading to change outout.
-    try:
-        return asyncio.ensure_future(
-            asyncio.get_event_loop().create_server(
-                app.make_handler(),
-                host='0.0.0.0',
-                port=int(config['github_relay']['port']),
-            )
+    if not hasattr(bot, '_github_webserver_create'):
+        bot.web_application.router.add_route(
+            'POST', '/github', lambda request, bot=bot, **kwargs: (
+                sys.modules[__name__]._handle_request(bot, request, **kwargs)
+            )  # Allow for hot-reloading to change outout.
         )
-    except ValueError:
-        logging.error('Invalid port value for GitHub webhook webserver.')
+        bot._github_webserver_create = True
 
 
 async def _handle_request(bot, request, **kwargs):

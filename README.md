@@ -34,6 +34,9 @@ The fields in the config file are as follows:
   to the IRC server.
 - `discord_token` - The token of a discord bot. This can be generated in the
   discord developer portal.
+- `webserver` - Configuration of whether or not to spawn a webserver and on
+  which port to spawn it. Enable if a module/listener uses the bot's webserver;
+  disable if no modules or listeners use it.
 - `modules_enabled` - Modules to enable. Leave blank to enable all.
 - `aliases` - A dictionary of trigger aliases mapping custom triggers to the
   triggers supported by the bot. Do not include the trigger character.
@@ -61,6 +64,10 @@ Example configuration:
     }
   },
   "discord_token": "sample",
+  "webserver": {
+    "enable": true,
+    "port": 38248
+  },
   "modules_enabled": [],
   "aliases": {
     "j": "join"
@@ -128,9 +135,10 @@ choose phrase1, phrase2, phrase3  // bot will respond with one of the phrases
 This module allows the bot to receive GitHub webhooks and report push, issue,
 and pull request events to a specified channel. If this module is enabled, a
 key/value pair similar to the following should be added to the configuration
-file.
+file. The webserver should also be enabled. This module creates an endpoint for
+GitHub's webhooks at the `/github` URL location; thus, the webhook in GitHub
+should be configured to target that URL location.
 
-- `port` - The port for the webserver to listen on.
 - `secret` - A secret key used to verify signed payloads from GitHub.
 - `relays` - A dictionary mapping repository IDs to lists of channels to relay
   webhook events to.
@@ -143,7 +151,6 @@ file.
 
 ```json
 "github_relay": {
-  "port": 38428,
   "secret": null,
   "relays": {
     "1": [
