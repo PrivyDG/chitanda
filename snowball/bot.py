@@ -31,7 +31,6 @@ class Snowball:
             return asyncio.ensure_future(
                 asyncio.get_event_loop().create_server(
                     self.web_application.make_handler(),
-                    host='0.0.0.0',
                     port=int(config['webserver']['port']),
                 )
             )
