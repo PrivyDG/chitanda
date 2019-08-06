@@ -95,16 +95,17 @@ class Snowball:
             return
 
         logger.info(f'Command triggered: {trigger}.')
-        response = command.call(
-            bot=self,
-            listener=listener,
-            target=target,
-            author=author,
-            message=message,
-            private=private,
-        )
 
         try:
+            response = command.call(
+                bot=self,
+                listener=listener,
+                target=target,
+                author=author,
+                message=message,
+                private=private,
+            )
+
             if response:
                 await self.handle_response(listener, target, response)
         except BotError as e:

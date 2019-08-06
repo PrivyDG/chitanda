@@ -31,17 +31,11 @@ def args(*regexes):
 
     def decorator(func):
         @functools.wraps(func)
-        async def wrapper(*, message, **kwargs):
+        def wrapper(*, message, **kwargs):
             for regex in regexes:
                 match = regex.match(message)
                 if match:
-                    response = func(args=match.groups(), **kwargs)
-                    if isinstance(response, AsyncGeneratorType):
-                        async for r in response:
-                            yield r
-                    else:
-                        yield await response
-                    break
+                    return func(args=match.groups(), **kwargs)
             else:
                 raise BotError('Invalid arguments.')
 
@@ -77,7 +71,9 @@ def auth_only(func):
         if not username:
             raise BotError('Identify with NickServ to use this command.')
 
-        response = func(listener=listener, author=author, **kwargs)
+        response = func(
+            listener=listener, author=author, username=username, **kwargs
+        )
         if isinstance(response, AsyncGeneratorType):
             async for r in response:
                 yield r
@@ -91,16 +87,10 @@ def channel_only(func):
     setattr(func, 'channel_only', True)
 
     @functools.wraps(func)
-    async def wrapper(*, private, **kwargs):
-        if private:
-            raise BotError('This command can only be run in a channel.')
-
-        response = func(private=private, **kwargs)
-        if isinstance(response, AsyncGeneratorType):
-            async for r in response:
-                yield r
-        else:
-            yield await response
+    def wrapper(*, private, **kwargs):
+        if not private:
+            return func(private=private, **kwargs)
+        raise BotError('This command can only be run in a channel.')
 
     return wrapper
 
@@ -110,17 +100,9 @@ def private_message_only(func):
 
     @functools.wraps(func)
     async def wrapper(*, private, **kwargs):
-        if not private:
-            raise BotError(
-                'This command can only be run in a private message.'
-            )
-
-        response = func(private=private, **kwargs)
-        if isinstance(response, AsyncGeneratorType):
-            async for r in response:
-                yield r
-        else:
-            yield await response
+        if private:
+            return func(private=private, **kwargs)
+        raise BotError('This command can only be run in a private message.')
 
     return wrapper
 
@@ -129,27 +111,15 @@ def allowed_listeners(*listeners):
     def decorator(func):
         setattr(func, 'listeners', listeners)
 
-        @functools.wraps(func)
-        async def wrapper(*, listener, **kwargs):
-            if not listeners:
-                response = func(listener=listener, **kwargs)
-                if isinstance(response, AsyncGeneratorType):
-                    async for r in response:
-                        yield r
-                else:
-                    yield await response
-                return
-
-            if any(isinstance(listener, l) for l in listeners):
-                response = func(listener=listener, **kwargs)
-                if isinstance(response, AsyncGeneratorType):
-                    async for r in response:
-                        yield r
-                else:
-                    yield await response
-            else:
+        if listeners:
+            @functools.wraps(func)
+            def wrapper(*, listener, **kwargs):
+                if any(isinstance(listener, l) for l in listeners):
+                    return func(listener=listener, **kwargs)
                 raise BotError('This command cannot be run on this listener.')
 
-        return wrapper
+            return wrapper
+
+        return func
 
     return decorator
