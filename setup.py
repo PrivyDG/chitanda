@@ -24,12 +24,12 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 # Fields marked as "Optional" may be commented out.
 setup(
     # https://packaging.python.org/specifications/core-metadata/#name
-    name='snowball',  # Required
+    name='chitanda',  # Required
     # https://www.python.org/dev/peps/pep-0440/
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.1',  # Required
+    version='0.0.2',  # Required
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description="An IRC bot framework.",  # Required
+    description="An extensible Discord & IRC bot.",  # Required
     # https://packaging.python.org/specifications/core-metadata/#description-optional
     long_description=long_description,  # Optional
     # https://packaging.python.org/specifications/core-metadata/#description-content-type-optional
@@ -60,7 +60,7 @@ setup(
     # https://stackoverflow.com/a/16576850
     include_package_data=True,
     entry_points={  # Optional
-        'console_scripts': ['snowball=snowball.__main__:main', ],
+        'console_scripts': ['chitanda=chitanda.__main__:main', ],
     },
     # https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
     project_urls={  # Optional

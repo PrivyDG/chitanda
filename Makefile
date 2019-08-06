@@ -1,6 +1,6 @@
 lint:
-	poetry run isort -rc snowball
-	poetry run flake8 snowball
+	poetry run isort -rc chitanda
+	poetry run flake8 chitanda
 
 build:
 	poetry run poetry-setup .

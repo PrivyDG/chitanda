@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "snowball"
+name = "chitanda"
 version = "0.0.2"
-description = "An IRC bot framework."
+description = "An extensible Discord & IRC bot."
 authors = ["dazzler <dazzler@riseup.net>"]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/dazuling/snowball"
+repository = "https://github.com/dazuling/chitanda"
 
 [tool.poetry.scripts]
-snowball = 'snowball.__main__:main'
+chitanda = 'chitanda.__main__:main'
 
 [tool.poetry.dependencies]
 python = "^3.7"
