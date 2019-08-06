@@ -84,7 +84,7 @@ class IRCListener(
             await self.bot.dispatch_command(**args)
 
     async def on_raw(self, message):
-        logger.info(f'Received raw IRC message: {message}'.rstrip())
+        logger.debug(f'Received raw IRC message: {message}'.rstrip())
         await super().on_raw(message)
 
     async def is_admin(self, user):
