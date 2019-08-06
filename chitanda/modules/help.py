@@ -42,10 +42,7 @@ async def call(*, bot, listener, target, author, args, private):
 
 
 def _applicable_listener(listener, call):
-    return (
-        not hasattr(call, 'listeners') or
-        type(listener) in call.listeners
-    )
+    return not hasattr(call, 'listeners') or type(listener) in call.listeners
 
 
 def _generate_help_text(call):

@@ -20,12 +20,13 @@ async def call(*, bot, listener, target, author, args, private):
     search = args[-1]
 
     future = asyncio.get_event_loop().run_in_executor(
-        None, lambda: requests.get(
+        None,
+        lambda: requests.get(
             'https://api.urbandictionary.com/v0/define',
             headers={'User-Agent': config['user_agent']},
             params={'term': search},
             timeout=15,
-        )
+        ),
     )
 
     try:
@@ -39,13 +40,18 @@ async def call(*, bot, listener, target, author, args, private):
             f'Could not find a definition for {search.rstrip(".")}.'
         )
 
-    defi = re.sub(
-        r'\[(.*?)\]', r'\1',
-        sorted(
-            response['list'],
-            key=lambda x: int(x['thumbs_up']) - int(x['thumbs_down']),
-            reverse=True,
-        )[entry]['definition']
-    ).strip().replace('\n', ' ')
+    defi = (
+        re.sub(
+            r'\[(.*?)\]',
+            r'\1',
+            sorted(
+                response['list'],
+                key=lambda x: int(x['thumbs_up']) - int(x['thumbs_down']),
+                reverse=True,
+            )[entry]['definition'],
+        )
+        .strip()
+        .replace('\n', ' ')
+    )
 
     return f'{defi[:497]}...' if len(defi) >= 500 else defi

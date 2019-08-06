@@ -28,7 +28,9 @@ def fetch_quotes(cursor, target, listener, quote_ids):
         WHERE
             channel = ?
             AND listener = ?
-            AND id IN (""" + (','.join(['?'] * len(quote_ids))) + """)
+            AND id IN ("""
+        + (','.join(['?'] * len(quote_ids)))
+        + """)
         ORDER BY id ASC
         """,
         (target, str(listener), *quote_ids),

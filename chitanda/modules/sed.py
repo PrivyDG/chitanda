@@ -67,9 +67,7 @@ def _substitute(match, message_log):
     for message in message_log:
         if regex.search(message):
             return regex.sub(
-                match[2],
-                message,
-                count=0 if flags['global'] else 1,
+                match[2], message, count=0 if flags['global'] else 1
             )
 
     return 'No matching message found.'

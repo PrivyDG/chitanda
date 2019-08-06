@@ -18,6 +18,7 @@ def trim_message(message, length=240):
 def register(trigger):
     def decorator(func):
         from chitanda.bot import Snowball
+
         Snowball.commands[trigger] = sys.modules[func.__module__]
         return functools.wraps(func)(func)
 
@@ -112,6 +113,7 @@ def allowed_listeners(*listeners):
         setattr(func, 'listeners', listeners)
 
         if listeners:
+
             @functools.wraps(func)
             def wrapper(*, listener, **kwargs):
                 if any(isinstance(listener, l) for l in listeners):

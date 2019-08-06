@@ -17,9 +17,11 @@ logger = logging.getLogger(__name__)
 def setup(bot):
     if not hasattr(bot, '_github_webserver_create'):
         bot.web_application.router.add_route(
-            'POST', '/github', lambda request, bot=bot, **kwargs: (
+            'POST',
+            '/github',
+            lambda request, bot=bot, **kwargs: (
                 sys.modules[__name__]._handle_request(bot, request, **kwargs)
-            )  # Allow for hot-reloading to change outout.
+            ),  # Allow for hot-reloading to change outout.
         )
         bot._github_webserver_create = True
 
@@ -32,9 +34,8 @@ async def _handle_request(bot, request, **kwargs):
     }
 
     logger.info('Received request from GitHub webhook.')
-    if (
-        config['github_relay']['secret']
-        and not _check_signature(await request.text(), request.headers)
+    if config['github_relay']['secret'] and not _check_signature(
+        await request.text(), request.headers
     ):
         logger.info('GitHub request contained invalid signature, ignoring.')
         return web.Response(body='Invalid signature.', status=500)
@@ -72,8 +73,7 @@ def _check_signature(payload, headers):
             digestmod=hashlib.sha1,
         ).hexdigest()
         return hmac.compare_digest(
-            f'sha1={expected_sig}',
-            headers['X-Hub-Signature'],
+            f'sha1={expected_sig}', headers['X-Hub-Signature']
         )
     except KeyError:
         pass
@@ -103,7 +103,7 @@ async def _handle_push(listener, payload, cfg):
             message=(
                 f'New tag {branch} tracking {payload["before"][:8]} pushed '
                 f'to {payload["repository"]["name"]}'
-            )
+            ),
         )
 
     if cfg['branches'] and branch not in cfg['branches']:
@@ -129,11 +129,7 @@ async def _handle_push(listener, payload, cfg):
 
     if isinstance(listener, DiscordListener):
         embed = Embed(title=construct_message(payload, branch))
-        embed.add_field(
-            name='Compare',
-            value=payload['compare'],
-            inline=False,
-        )
+        embed.add_field(name='Compare', value=payload['compare'], inline=False)
         for commit in payload['commits']:
             embed.add_field(
                 name=(
@@ -144,23 +140,18 @@ async def _handle_push(listener, payload, cfg):
                 inline=False,
             )
         await listener.message(
-            target=cfg['channel'],
-            message=embed,
-            embed=True,
+            target=cfg['channel'], message=embed, embed=True
         )
     else:
         await listener.message(
-            target=cfg['channel'],
-            message=construct_message(payload, branch),
+            target=cfg['channel'], message=construct_message(payload, branch)
         )
         await listener.message(
-            target=cfg['channel'],
-            message=f'Compare - {payload["compare"]}',
+            target=cfg['channel'], message=f'Compare - {payload["compare"]}'
         )
         for commit in payload['commits']:
             await listener.message(
-                target=cfg['channel'],
-                message=construct_commit_message(commit),
+                target=cfg['channel'], message=construct_commit_message(commit)
             )
 
 
@@ -173,7 +164,7 @@ async def _handle_issue(listener, payload, cfg):
             f'{payload["issue"]["number"]} - '
             f'{trim_message(payload["issue"]["title"], 200)} - '
             f'{payload["issue"]["html_url"]}'
-        )
+        ),
     )
 
 
@@ -186,7 +177,7 @@ async def _handle_pull_request(listener, payload, cfg):
             f'{payload["issue"]["number"]} - '
             f'{trim_message(payload["issue"]["title"], 200)} - '
             f'{payload["issue"]["html_url"]}'
-        )
+        ),
     )
 
 

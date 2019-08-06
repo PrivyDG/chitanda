@@ -25,7 +25,9 @@ async def call(*, bot, listener, target, author, args, private):
             WHERE
                 channel = ?
                 AND listener = ?
-                AND id IN (""" + (','.join(['?'] * len(quote_ids))) + """)
+                AND id IN ("""
+            + (','.join(['?'] * len(quote_ids)))
+            + """)
             """,
             (target, str(listener), *quote_ids),
         )

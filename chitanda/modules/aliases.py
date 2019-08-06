@@ -25,10 +25,7 @@ async def call(*, bot, listener, target, author, args, private):
             'embed': True,
         }
     else:
-        yield {
-            'target': author,
-            'message': 'Aliases:',
-        }
+        yield {'target': author, 'message': 'Aliases:'}
         for alias, command in sorted(config['aliases'].items()):
             yield {
                 'target': author,

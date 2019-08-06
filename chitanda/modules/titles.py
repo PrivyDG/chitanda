@@ -38,12 +38,13 @@ async def title_handler(listener, target, author, message, private):
 async def _get_title(url):
     try:
         response = await asyncio.get_event_loop().run_in_executor(
-            None, lambda: requests.get(
+            None,
+            lambda: requests.get(
                 url,
                 headers={'User-Agent': config['user_agent']},
                 stream=True,
                 timeout=5,
-            )
+            ),
         )
         data = response.raw.read(512000, decode_content=True).decode('utf-8')
     except (requests.RequestException, UnicodeDecodeError):

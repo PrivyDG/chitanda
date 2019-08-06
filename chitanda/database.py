@@ -43,7 +43,7 @@ def migrate():
                 cursor.executescript(sql.read())
                 cursor.execute(
                     'INSERT INTO versions (source, version) VALUES (?, ?)',
-                    (mig.source, mig.version)
+                    (mig.source, mig.version),
                 )
             conn.commit()
 

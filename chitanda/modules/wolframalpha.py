@@ -15,15 +15,13 @@ logger = logging.getLogger(__name__)
 async def call(*, bot, listener, target, author, args, private):
     """Queries the Wolfram|Alpha API and relays the response."""
     future = asyncio.get_event_loop().run_in_executor(
-        None, lambda: requests.get(
+        None,
+        lambda: requests.get(
             'https://api.wolframalpha.com/v1/result',
             headers={'User-Agent': config['user_agent']},
-            params={
-                'appid': config['wolframalpha']['appid'],
-                'i': args[0],
-            },
+            params={'appid': config['wolframalpha']['appid'], 'i': args[0]},
             timeout=15,
-        )
+        ),
     )
 
     try:

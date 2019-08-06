@@ -49,20 +49,23 @@ def _get_lastfm_nick(username, listener):
 
 async def _get_now_playing(lastfm, author=None):
     try:
-        response = (await asyncio.get_event_loop().run_in_executor(
-            None, lambda: requests.get(
-                API_URL,
-                headers={'User-Agent': config['user_agent']},
-                params={
-                    'method': 'user.getrecenttracks',
-                    'api_key': config['lastfm']['api_key'],
-                    'user': lastfm,
-                    'limit': 1,
-                    'format': 'json',
-                },
-                timeout=5,
+        response = (
+            await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: requests.get(
+                    API_URL,
+                    headers={'User-Agent': config['user_agent']},
+                    params={
+                        'method': 'user.getrecenttracks',
+                        'api_key': config['lastfm']['api_key'],
+                        'user': lastfm,
+                        'limit': 1,
+                        'format': 'json',
+                    },
+                    timeout=5,
+                ),
             )
-        )).json()
+        ).json()
     except JSONDecodeError as e:
         logger.error(f'Failed to query Last.FM API: {e}.')
         raise BotError(f'Failed to query Last.FM API.')
@@ -83,8 +86,7 @@ def _calculate_time_since_played(track, author=None):
         return
 
     scrobble_time = datetime.strptime(
-        track['date']['#text'],
-        '%d %b %Y, %H:%M',
+        track['date']['#text'], '%d %b %Y, %H:%M'
     )
     diff = datetime.utcnow() - scrobble_time
     hours, seconds = divmod(diff.seconds, 3600)
@@ -117,7 +119,8 @@ async def _get_track_tags(track, album, artist):
 
     executors = [
         asyncio.get_event_loop().run_in_executor(
-            None, lambda: requests.get(
+            None,
+            lambda: requests.get(
                 API_URL,
                 headers={'User-Agent': config['user_agent']},
                 params={
@@ -126,8 +129,9 @@ async def _get_track_tags(track, album, artist):
                     **p,
                 },
                 timeout=5,
-            )
-        ) for p in params
+            ),
+        )
+        for p in params
     ]
 
     tags = []

@@ -16,13 +16,7 @@ async def call(*, bot, listener, target, author, args, private, username):
                 id, channel, listener, quote, adder
             ) VALUES (?, ?, ?, ?, ?)
             """,
-            (
-                new_quote_id,
-                target,
-                str(listener),
-                args[0],
-                username,
-            ),
+            (new_quote_id, target, str(listener), args[0], username),
         )
         conn.commit()
     return f'Added quote with ID {new_quote_id}.'

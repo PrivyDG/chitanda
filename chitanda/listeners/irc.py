@@ -15,10 +15,7 @@ class IRCListener(
     pydle.features.RFC1459Support,
 ):
 
-    message_handlers = {
-        'channel': [],
-        'pm': [],
-    }
+    message_handlers = {'channel': [], 'pm': []}
 
     def __init__(self, bot, nickname, hostname):
         self.bot = bot
@@ -87,9 +84,8 @@ class IRCListener(
 
     async def is_admin(self, user):
         info = await self.whois(user)
-        return (
-            info['identified'] and
-            info['account'] in config['admins'].get(str(self), [])
+        return info['identified'] and info['account'] in config['admins'].get(
+            str(self), []
         )
 
     async def is_authed(self, user):

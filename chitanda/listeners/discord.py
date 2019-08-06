@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class DiscordListener(discord.Client):
-
     def __init__(self, bot):
         self.bot = bot
         self.message_lock = defaultdict(lambda: False)

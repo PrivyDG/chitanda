@@ -36,13 +36,7 @@ async def call(bot, listener, target, author, args, private):
                 channel, listener, message, recipient, sender
             ) VALUES (?, ?, ?, ?, ?)
             """,
-            (
-                target,
-                str(listener),
-                args[1],
-                args[0],
-                author,
-            ),
+            (target, str(listener), args[1], args[0], author),
         )
         conn.commit()
     logger.info(f'Added a tell for {args[0]} in {target} on {listener}')
@@ -73,5 +67,5 @@ def _fetch_tells(target, listener, author):
 def _delete_tell(tell_id):
     logger.debug(f'Deleting tell {tell_id}.')
     with database() as (conn, cursor):
-        cursor.execute('DELETE FROM tells WHERE id = ?', (tell_id, ))
+        cursor.execute('DELETE FROM tells WHERE id = ?', (tell_id,))
         conn.commit()

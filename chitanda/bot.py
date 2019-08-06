@@ -79,7 +79,7 @@ class Snowball:
         await self.dispatch_command(listener, target, author, message, private)
 
     async def dispatch_command(
-        self, listener, target, author, message, private,
+        self, listener, target, author, message, private
     ):
         logger.debug(
             f'Message received on {listener} in channel {target} '
@@ -125,7 +125,8 @@ class Snowball:
             async for resp in response:
                 packed_resp = self._pack_response(resp, target)
                 await self.call_response_handlers(
-                    listener, target, packed_resp['message'])
+                    listener, target, packed_resp['message']
+                )
                 await listener.message(**packed_resp)
         else:
             response = await response
