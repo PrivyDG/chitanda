@@ -1,7 +1,7 @@
 import logging
 
-from snowball.commands import load_commands
 from snowball.config import config
+from snowball.modules import load_commands
 from snowball.util import admin_only, args, register
 
 logger = logging.getLogger(__name__)
@@ -19,9 +19,9 @@ async def call(bot, listener, target, author, args, private):
         return 'Error reloading config.'
 
     try:
-        load_commands(bot, run_setup=False)
+        load_commands(bot)
     except Exception as e:  # noqa: E203
-        logger.error(f'Error reloading commands: {e}')
-        return 'Error reloading commands.'
+        logger.error(f'Error reloading modules: {e}')
+        return 'Error reloading modules.'
 
     return 'Commands reloaded.'

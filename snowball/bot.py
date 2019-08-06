@@ -4,10 +4,11 @@ import sys
 from types import AsyncGeneratorType, GeneratorType
 
 from aiohttp import web
+
 from snowball import BotError
-from snowball.commands import load_commands
 from snowball.config import config
 from snowball.listeners import DiscordListener, IRCListener
+from snowball.modules import load_commands
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,12 @@ class Snowball:
 
         logger.info(f'Command triggered: {trigger}.')
         response = command.call(
-            self, listener, target, author, message, private,
+            bot=self,
+            listener=listener,
+            target=target,
+            author=author,
+            message=message,
+            private=private,
         )
         try:
             if response:

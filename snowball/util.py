@@ -8,8 +8,6 @@ from snowball import BotError
 
 EVENT_LOOP = asyncio.get_event_loop()
 
-# Duplication of code to accomodate async generator.
-
 
 def trim_message(message, length=240):
     if len(message) > len:
@@ -27,15 +25,17 @@ def register(trigger):
 
 
 def args(*regexes):
+    regexes = [
+        re.compile(r) if not isinstance(r, re.Pattern) else r for r in regexes
+    ]
+
     def decorator(func):
         @functools.wraps(func)
-        async def wrapper(bot, listener, target, author, message, *args):
+        async def wrapper(*, message, **kwargs):
             for regex in regexes:
-                match = re.match(regex, message)
+                match = regex.match(message)
                 if match:
-                    response = func(
-                        bot, listener, target, author, match.groups(), *args
-                    )
+                    response = func(args=match.groups(), **kwargs)
                     if isinstance(response, AsyncGeneratorType):
                         async for r in response:
                             yield r
@@ -54,11 +54,11 @@ def admin_only(func):
     setattr(func, 'admin_only', True)
 
     @functools.wraps(func)
-    async def wrapper(bot, listener, target, author, *args):
+    async def wrapper(*, listener, author, **kwargs):
         if not await listener.is_admin(author):
             raise BotError('Unauthorized.')
 
-        response = func(bot, listener, target, author, *args)
+        response = func(listener=listener, author=author, **kwargs)
         if isinstance(response, AsyncGeneratorType):
             async for r in response:
                 yield r
@@ -72,14 +72,12 @@ def auth_only(func):
     setattr(func, 'auth_only', True)
 
     @functools.wraps(func)
-    async def wrapper(bot, listener, target, author, message, private):
+    async def wrapper(*, listener, author, **kwargs):
         username = await listener.is_authed(author)
         if not username:
             raise BotError('Identify with NickServ to use this command.')
 
-        response = func(
-            bot, listener, target, author, message, private, username
-        )
+        response = func(listener=listener, author=author, **kwargs)
         if isinstance(response, AsyncGeneratorType):
             async for r in response:
                 yield r
@@ -93,11 +91,11 @@ def channel_only(func):
     setattr(func, 'channel_only', True)
 
     @functools.wraps(func)
-    async def wrapper(bot, listener, target, author, message, private, *args):
+    async def wrapper(*, private, **kwargs):
         if private:
             raise BotError('This command can only be run in a channel.')
 
-        response = func(bot, listener, target, author, message, private, *args)
+        response = func(private=private, **kwargs)
         if isinstance(response, AsyncGeneratorType):
             async for r in response:
                 yield r
@@ -111,13 +109,13 @@ def private_message_only(func):
     setattr(func, 'private_message_only', True)
 
     @functools.wraps(func)
-    async def wrapper(bot, listener, target, author, message, private, *args):
+    async def wrapper(*, private, **kwargs):
         if not private:
             raise BotError(
                 'This command can only be run in a private message.'
             )
 
-        response = func(bot, listener, target, author, message, private, *args)
+        response = func(private=private, **kwargs)
         if isinstance(response, AsyncGeneratorType):
             async for r in response:
                 yield r
@@ -132,9 +130,9 @@ def allowed_listeners(*listeners):
         setattr(func, 'listeners', listeners)
 
         @functools.wraps(func)
-        async def wrapper(bot, listener, *args):
+        async def wrapper(*, listener, **kwargs):
             if not listeners:
-                response = func(bot, listener, *args)
+                response = func(listener=listener, **kwargs)
                 if isinstance(response, AsyncGeneratorType):
                     async for r in response:
                         yield r
@@ -143,7 +141,7 @@ def allowed_listeners(*listeners):
                 return
 
             if any(isinstance(listener, l) for l in listeners):
-                response = func(bot, listener, *args)
+                response = func(listener=listener, **kwargs)
                 if isinstance(response, AsyncGeneratorType):
                     async for r in response:
                         yield r

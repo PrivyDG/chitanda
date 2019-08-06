@@ -59,7 +59,7 @@ def _calculate_migrations_needed():
 
 def _find_migrations():
     migrations = []
-    commands_path = Path(__file__).parent / 'commands'
+    commands_path = Path(__file__).parent / 'modules'
     for sql_path in commands_path.glob('**/*.sql'):
         try:
             migrations.append(

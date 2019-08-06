@@ -5,7 +5,7 @@ from pkgutil import iter_modules
 from snowball.config import config
 
 
-def load_commands(bot, run_setup=True):
+def load_commands(bot):
     for name in _get_module_names():
         if not _is_module_enabled(name):
             if name in sys.modules:
@@ -15,21 +15,19 @@ def load_commands(bot, run_setup=True):
                 importlib.reload(sys.modules[name])
             else:
                 importlib.import_module(name)
-
-            if run_setup and hasattr(sys.modules[name], 'setup'):
-                sys.modules[name].setup(bot)
+                if hasattr(sys.modules[name], 'setup'):
+                    sys.modules[name].setup(bot)
 
 
 def _is_module_enabled(full_name):
     if config['modules_enabled']:
         try:
-            short_name = full_name.replace(
-                'snowball.commands.', '', 1
-            ).split('.')[0]
-            if short_name not in config['modules_enabled']:
+            name = full_name.replace('snowball.modules.', '', 1).split('.')[0]
+            if name not in config['modules_enabled']:
                 return False
         except IndexError:
             pass
+
     return True
 
 
