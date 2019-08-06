@@ -16,8 +16,8 @@ def load_commands(bot, run_setup=True):
             else:
                 importlib.import_module(name)
 
-        if run_setup and hasattr(sys.modules[name], 'setup'):
-            sys.modules[name].setup(bot)
+            if run_setup and hasattr(sys.modules[name], 'setup'):
+                sys.modules[name].setup(bot)
 
 
 def _is_module_enabled(full_name):
