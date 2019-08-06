@@ -1,7 +1,6 @@
 import logging
 import sqlite3
 import sys
-import time
 from collections import namedtuple
 from contextlib import contextmanager
 from pathlib import Path
@@ -46,6 +45,36 @@ def migrate():
             conn.commit()
 
 
+def create_database_if_nonexistent():
+    with database() as (conn, cursor):
+        cursor.execute(
+            """
+            SELECT name FROM sqlite_master
+            WHERE type='table' AND name='versions'
+            """
+        )
+        if not cursor.fetchone():
+            logger.info('Creating versions table.')
+            cursor.execute(
+                """
+                CREATE TABLE versions (
+                    source TEXT,
+                    version INTEGER,
+                    PRIMARY KEY (source, version)
+                )
+                """
+            )
+            conn.commit()
+
+
+def confirm_database_is_updated():
+    if _calculate_migrations_needed():
+        if not len(sys.argv) == 2 or sys.argv[1] != 'migrate':
+            logger.warning('The database needs to be migrated.')
+            logger.warning('Run `snowball migrate`.')
+            sys.exit(1)
+
+
 def _calculate_migrations_needed():
     migrations = _find_migrations()
     versions = _get_versions()
@@ -81,32 +110,3 @@ def _get_versions():
             'SELECT source, MAX(version) FROM versions GROUP BY source'
         )
         return {r['source']: r[1] for r in cursor.fetchall()}
-
-
-with database() as (conn, cursor):
-    cursor.execute(
-        """
-        SELECT name FROM sqlite_master
-        WHERE type='table' AND name='versions'
-        """
-    )
-    if not cursor.fetchone():
-        logger.info('Creating versions table.')
-        cursor.execute(
-            """
-            CREATE TABLE versions (
-                source TEXT,
-                version INTEGER,
-                PRIMARY KEY (source, version)
-            )
-            """
-        )
-        conn.commit()
-
-
-if _calculate_migrations_needed():
-    if not len(sys.argv) == 2 or sys.argv[1] != 'migrate':
-        logger.warning('The database needs to be migrated.')
-        logger.warning('Run `snowball migrate`.')
-        logger.info('Sleeping for 3 seconds.')
-        time.sleep(3)

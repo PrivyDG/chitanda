@@ -23,9 +23,12 @@ BLANK_CONFIG = {
 
 class Config:
     def __init__(self):
-        self.config = self.load_config()
+        self.config = None  # Lazy load config.
 
     def __getitem__(self, key):
+        if self.config is None:
+            self.config = self.load_config()
+
         try:
             return self.config[key]
         except TypeError:

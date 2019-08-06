@@ -4,10 +4,13 @@ import json
 import click
 
 import snowball.database  # noqa
-from snowball import CONFIG_PATH, cmdgroup
+from snowball import CONFIG_PATH, cmdgroup, create_app_dirs, huey
 from snowball.bot import Snowball
 from snowball.config import BLANK_CONFIG
-from snowball.tasks import huey
+from snowball.database import (
+    confirm_database_is_updated,
+    create_database_if_nonexistent,
+)
 
 
 @cmdgroup.command()
@@ -28,4 +31,12 @@ def config():
     click.edit(filename=CONFIG_PATH)
 
 
-cmdgroup()
+def main():
+    create_app_dirs()
+    create_database_if_nonexistent()
+    confirm_database_is_updated()
+    cmdgroup()
+
+
+if __name__ == '__main__':
+    main()

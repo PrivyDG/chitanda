@@ -60,9 +60,7 @@ setup(
     # https://stackoverflow.com/a/16576850
     include_package_data=True,
     entry_points={  # Optional
-        'console_scripts': [
-            'snowball=snowball.__main__:cmdgroup',
-        ],
+        'console_scripts': ['snowball=snowball.__main__:main', ],
     },
     # https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
     project_urls={  # Optional
