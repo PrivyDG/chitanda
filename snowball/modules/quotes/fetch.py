@@ -5,7 +5,7 @@ from snowball.util import channel_only, register
 
 @register('quote')
 @channel_only
-async def call(bot, listener, target, author, message, private):
+async def call(*, bot, listener, target, author, message, private):
     """Fetch quotes by ID or one random quote from the channel."""
     with database() as (conn, cursor):
         if not message:

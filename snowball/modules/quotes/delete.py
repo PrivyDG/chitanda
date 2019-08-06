@@ -9,7 +9,7 @@ from . import fetch
 @channel_only
 @admin_only
 @args(r'(.+)')
-async def call(bot, listener, target, author, args, private):
+async def call(*, bot, listener, target, author, args, private):
     """Delete a quote from the database."""
     quote_ids = _parse_quote_ids(args[0])
     with database() as (conn, cursor):

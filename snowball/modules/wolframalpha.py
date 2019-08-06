@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 @register('wolframalpha')
 @args(r'(.+)')
-async def call(bot, listener, target, author, args, private):
+async def call(*, bot, listener, target, author, args, private):
     """Queries the Wolfram|Alpha API and relays the response."""
     future = asyncio.get_event_loop().run_in_executor(
         None, lambda: requests.get(

@@ -16,38 +16,40 @@ TITLE_REGEX = re.compile(r'<title>(.*?)</title>')
 
 
 def setup(bot):
-    async def title_handler(listener, target, author, message, private):
-        if isinstance(listener, IRCListener) and not private:
-            matches = URL_REGEX.search(message)
-            if matches:
-                for match in matches.groups():
-                    try:
-                        title = await _get_title(match)
-                    except (requests.RequestException, UnicodeDecodeError):
-                        continue
-
-                    if title:
-                        logger.info(
-                            f'Title found from {match} in {target} '
-                            f'from {listener}'
-                        )
-                        await listener.message(target, title)
-
     bot.message_handlers.append(title_handler)
 
 
-async def _get_title(url):
-    response = await asyncio.get_event_loop().run_in_executor(
-        None, lambda: requests.get(
-            url,
-            headers={'User-Agent': config['user_agent']},
-            stream=True,
-            timeout=5,
-        )
-    )
+async def title_handler(listener, target, author, message, private):
+    if isinstance(listener, IRCListener) and not private:
+        matches = URL_REGEX.search(message)
+        if not matches:
+            return
 
-    data = response.raw.read(512000, decode_content=True).decode('utf-8')
-    text = ' '.join(re.split(r'\r|\n|\r\n', html.unescape(data))).strip()
-    match = TITLE_REGEX.search(text)
+        for match in matches.groups():
+            title = await _get_title(match)
+            if title:
+                yield title
+                logger.info(
+                    f'Title relayed from {match} in {target} from {listener}'
+                )
+
+
+async def _get_title(url):
+    try:
+        response = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: requests.get(
+                url,
+                headers={'User-Agent': config['user_agent']},
+                stream=True,
+                timeout=5,
+            )
+        )
+        data = response.raw.read(512000, decode_content=True).decode('utf-8')
+    except (requests.RequestException, UnicodeDecodeError):
+        return
+
+    match = TITLE_REGEX.search(
+        ' '.join(re.split(r'\r|\n|\r\n', html.unescape(data))).strip()
+    )
     if match:
         return f'Title: {trim_message(match[1], length=400)}'

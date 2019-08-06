@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 @register('reload')
 @admin_only
 @args(r'$')
-async def call(bot, listener, target, author, args, private):
+async def call(*, bot, listener, target, author, args, private):
     """Hot reload the bot's config and modules."""
     try:
         config.reload()

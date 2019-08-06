@@ -5,7 +5,7 @@ from snowball.util import args, auth_only, register
 @register('unsetplaying')
 @auth_only
 @args(r'$')
-async def call(bot, listener, target, author, args, private, username):
+async def call(*, bot, listener, target, author, args, private, username):
     """Unset your Last.FM name."""
     with database() as (conn, cursor):
         cursor.execute(

@@ -5,7 +5,7 @@ from snowball.util import args, auth_only, register
 @register('setplaying')
 @auth_only
 @args(r'([^ ]+)$')
-async def call(bot, listener, target, author, args, private, username):
+async def call(*, bot, listener, target, author, args, private, username):
     """Set a Last.FM name for the nowplaying command."""
     lastfm = args[0]
     with database() as (conn, cursor):

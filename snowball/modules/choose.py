@@ -6,7 +6,7 @@ from snowball.util import register
 
 
 @register('choose')
-async def call(bot, listener, target, author, message, private):
+async def call(*, bot, listener, target, author, message, private):
     """Chooses one of many provided options."""
     match = re.match(r'(\d+) *- *(\d+)', message)
     if match:

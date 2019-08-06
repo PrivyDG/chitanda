@@ -6,7 +6,7 @@ from snowball.util import args, auth_only, channel_only, register
 @channel_only
 @auth_only
 @args(r'(.+)')
-async def call(bot, listener, target, author, args, private, username):
+async def call(*, bot, listener, target, author, args, private, username):
     """Add a quote to the database."""
     with database() as (conn, cursor):
         new_quote_id = _get_quote_id(cursor, listener, target)

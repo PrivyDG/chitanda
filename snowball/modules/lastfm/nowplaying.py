@@ -17,7 +17,7 @@ API_URL = 'https://ws.audioscrobbler.com/2.0/'
 @register('nowplaying')
 @auth_only
 @args(r'$')
-async def call(bot, listener, target, author, args, private, username):
+async def call(*, bot, listener, target, author, args, private, username):
     """Relay your currently playing Last.FM track."""
     lastfm = _get_lastfm_nick(username, listener)
     response = await _get_now_playing(lastfm, author)

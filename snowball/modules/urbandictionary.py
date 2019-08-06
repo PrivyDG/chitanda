@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @register('urbandictionary')
 @args(r'(\d+) (.+)', r'(.+)')
-async def call(bot, listener, target, author, args, private):
+async def call(*, bot, listener, target, author, args, private):
     """Queries the UrbanDictionary API and relays the response."""
     entry = int(args[0]) if len(args) == 2 else 1
     search = args[-1]

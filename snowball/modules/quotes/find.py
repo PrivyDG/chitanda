@@ -5,7 +5,7 @@ from snowball.util import args, channel_only, register
 @register('findquote')
 @channel_only
 @args(r'(.+)')
-async def call(bot, listener, target, author, args, private):
+async def call(*, bot, listener, target, author, args, private):
     """Find a quote by its content."""
     with database() as (conn, cursor):
         cursor.execute(

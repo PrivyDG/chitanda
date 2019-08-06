@@ -36,7 +36,7 @@ async def on_message(listener, target, author, message, private):
 @register('sed')
 @channel_only
 @args(REGEX)
-def call(bot, listener, target, author, args, private):
+def call(*, bot, listener, target, author, args, private):
     return _substitute(args, listener.message_log[target])
 
 

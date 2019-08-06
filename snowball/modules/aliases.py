@@ -7,7 +7,7 @@ from snowball.util import args, register
 
 @register('aliases')
 @args(r'$')
-async def call(bot, listener, target, author, args, private):
+async def call(*, bot, listener, target, author, args, private):
     """Sends a private message detailing the command aliases."""
     if isinstance(listener, DiscordListener):
         embed = Embed(title='Aliases')
