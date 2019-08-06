@@ -69,7 +69,6 @@ class IRCListener(
                 'private': False,
             }
             await self.bot.handle_message(**args)
-            await self.bot.dispatch_command(**args)
 
     async def on_private_message(self, target, by, message):
         if by != self.nickname:
@@ -81,7 +80,6 @@ class IRCListener(
                 'private': True,
             }
             await self.bot.handle_message(**args)
-            await self.bot.dispatch_command(**args)
 
     async def on_raw(self, message):
         logger.debug(f'Received raw IRC message: {message}'.rstrip())

@@ -19,7 +19,7 @@ async def call(*, bot, listener, target, author, args, private):
         return 'Error reloading config.'
 
     try:
-        load_commands(bot)
+        load_commands(bot, run_setup=False)
     except Exception as e:  # noqa: E203
         logger.error(f'Error reloading modules: {e}')
         return 'Error reloading modules.'

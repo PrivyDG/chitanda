@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 URL_REGEX = re.compile(r'.*(https?:\/\/[^ \.]+\.[^ ]+)+.*')
 TITLE_REGEX = re.compile(r'<title>(.*?)</title>')
+LB_REGEX = re.compile(r'\r|\n')
 
 
 def setup(bot):
@@ -48,8 +49,6 @@ async def _get_title(url):
     except (requests.RequestException, UnicodeDecodeError):
         return
 
-    match = TITLE_REGEX.search(
-        ' '.join(re.split(r'\r|\n|\r\n', html.unescape(data))).strip()
-    )
+    match = TITLE_REGEX.search(' '.join(LB_REGEX.split(html.unescape(data))))
     if match:
-        return f'Title: {trim_message(match[1], length=400)}'
+        return f'Title: {trim_message(match[1].strip(), length=400)}'

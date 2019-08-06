@@ -3,7 +3,6 @@ from collections import defaultdict, deque
 from functools import partial
 
 import discord
-
 from snowball.config import config
 
 logger = logging.getLogger(__name__)
@@ -61,7 +60,6 @@ class DiscordListener(discord.Client):
                 'private': isinstance(message.channel, discord.DMChannel),
             }
             await self.bot.handle_message(**args)
-            await self.bot.dispatch_command(**args)
 
     async def is_admin(self, user):
         return str(user) in config['admins'].get(str(self), [])

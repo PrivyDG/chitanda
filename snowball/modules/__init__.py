@@ -5,7 +5,7 @@ from pkgutil import iter_modules
 from snowball.config import config
 
 
-def load_commands(bot):
+def load_commands(bot, run_setup=True):
     for name in _get_module_names():
         if not _is_module_enabled(name):
             if name in sys.modules:
@@ -15,27 +15,26 @@ def load_commands(bot):
                 importlib.reload(sys.modules[name])
             else:
                 importlib.import_module(name)
-                if hasattr(sys.modules[name], 'setup'):
-                    sys.modules[name].setup(bot)
+
+        if run_setup and hasattr(sys.modules[name], 'setup'):
+            sys.modules[name].setup(bot)
 
 
 def _is_module_enabled(full_name):
-    if config['modules_enabled']:
-        try:
-            name = full_name.replace('snowball.modules.', '', 1).split('.')[0]
-            if name not in config['modules_enabled']:
-                return False
-        except IndexError:
-            pass
-
-    return True
+    try:
+        name = full_name.replace('snowball.modules.', '', 1).split('.')[0]
+        return (
+            not config['modules_enabled'] or name in config['modules_enabled']
+        )
+    except IndexError:
+        return True
 
 
-def _get_module_names(pkg_path=__name__):
+def _get_module_names(pkg_path=__name__, bot=None):
     for module_info in iter_modules(sys.modules[pkg_path].__path__):
-        modname = f'{pkg_path}.{module_info.name}'
+        name = f'{pkg_path}.{module_info.name}'
         if module_info.ispkg:
-            importlib.import_module(modname)
-            for modname_ in _get_module_names(modname):
-                yield modname_
-        yield modname
+            importlib.import_module(name)
+            for name_ in _get_module_names(name, bot=bot):
+                yield name_
+        yield name

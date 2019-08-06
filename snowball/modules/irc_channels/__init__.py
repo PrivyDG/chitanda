@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def setup(bot):
     _add_handlers_to_irc_listener()
     channels = _get_channels_to_rejoin()
-    asyncio.ensure_future(_setup(bot, channels))
+    asyncio.ensure_future(_rejoin_channels(bot, channels))
 
 
 def _add_handlers_to_irc_listener():
@@ -74,7 +74,7 @@ def _get_channels_to_rejoin():
     return channels
 
 
-async def _setup(bot, channels):
+async def _rejoin_channels(bot, channels):
     """
     Loop until the IRC listeners establish ther connections to the
     IRC servers, then join the channels the bot was previously in.

@@ -21,9 +21,13 @@ class Snowball:
         self.irc_listeners = {}
         self.discord_listener = None
         self.message_handlers = []
+        self.response_handlers = []
+
         if config['webserver']['enable']:
             self.web_application = web.Application()
+
         load_commands(self)
+
         if config['webserver']['enable']:
             self.webserver = self._start_webserver()
 
@@ -69,7 +73,10 @@ class Snowball:
 
     async def handle_message(self, listener, target, author, message, private):
         for handler in self.message_handlers:
-            await handler(listener, target, author, message, private)
+            response = handler(listener, target, author, message, private)
+            await self.handle_response(listener, target, response)
+
+        await self.dispatch_command(listener, target, author, message, private)
 
     async def dispatch_command(
         self, listener, target, author, message, private,
@@ -96,9 +103,10 @@ class Snowball:
             message=message,
             private=private,
         )
+
         try:
             if response:
-                await self._send_response(listener, target, response)
+                await self.handle_response(listener, target, response)
         except BotError as e:
             logger.info(f'Error triggered by {author}: {e}.')
             await listener.message(target, f'Error: {e}')
@@ -109,26 +117,40 @@ class Snowball:
         except KeyError:
             return trigger, message
 
-    async def _send_response(self, listener, target, response):
+    async def handle_response(self, listener, target, response):
         if isinstance(response, AsyncGeneratorType):
-            logger.info('AsyncGenerator response received, sending to target.')
+            logger.debug('AsyncGenerator response received.')
             async for resp in response:
-                await listener.message(**self._package_response(resp, target))
-            return
-
-        response = await response
-        if isinstance(response, GeneratorType):
-            logger.info('Generator response received, sending to target.')
-            for resp in response:
-                await listener.message(**self._package_response(resp, target))
-        elif isinstance(response, dict):
-            logger.info('Dict response received, sending to target.')
-            await listener.message(**response)
+                packed_resp = self._pack_response(resp, target)
+                await self.call_response_handlers(
+                    listener, target, packed_resp['message'])
+                await listener.message(**packed_resp)
         else:
-            logger.info('Str response received, sending to target.')
-            await listener.message(target, str(response))
+            response = await response
+            if isinstance(response, GeneratorType):
+                logger.debug('Generator response received.')
+                for resp in response:
+                    packed_resp = self._pack_response(resp, target)
+                    await self.call_response_handlers(
+                        listener, target, packed_resp['message']
+                    )
+                    await listener.message(**packed_resp)
+            elif isinstance(response, dict):
+                logger.debug('Dict response received.')
+                await self.call_response_handlers(
+                    listener, target, resp['message']
+                )
+                await listener.message(**response)
+            elif response:
+                logger.debug('Str response received.')
+                await self.call_response_handlers(listener, target, response)
+                await listener.message(target, str(response))
 
-    def _package_response(self, resp, target):
+    async def call_response_handlers(self, listener, target, response):
+        for handler in self.response_handlers:
+            handler(listener, target, response)
+
+    def _pack_response(self, resp, target):
         if not isinstance(resp, dict):
             resp = {'target': target, 'message': str(resp)}
         return resp

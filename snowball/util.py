@@ -10,7 +10,7 @@ EVENT_LOOP = asyncio.get_event_loop()
 
 
 def trim_message(message, length=240):
-    if len(message) > len:
+    if len(message) > length:
         return f'{message[:length - 3]}...'
     return message
 
