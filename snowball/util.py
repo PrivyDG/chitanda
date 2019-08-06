@@ -8,7 +8,13 @@ from snowball import BotError
 
 EVENT_LOOP = asyncio.get_event_loop()
 
-# Duplication of code due to accomodating async generator.
+# Duplication of code to accomodate async generator.
+
+
+def trim_message(message, length=240):
+    if len(message) > len:
+        return f'{message[:length - 3]}...'
+    return message
 
 
 def register(trigger):

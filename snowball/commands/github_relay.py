@@ -6,8 +6,10 @@ import sys
 
 from aiohttp import web
 from discord import Embed
+
 from snowball.config import config
 from snowball.listeners import DiscordListener
+from snowball.util import trim_message
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +122,7 @@ async def _handle_push(listener, payload, cfg):
         url = commit['url'].replace(commit['id'], chash)
         return (
             f'{chash} - {commit["author"]["username"]} - '
-            f'{_trim_message(commit["message"])} - {url}'
+            f'{trim_message(commit["message"])} - {url}'
         )
 
     logger.info(f'Received push to branch event.')
@@ -136,7 +138,7 @@ async def _handle_push(listener, payload, cfg):
             embed.add_field(
                 name=(
                     f'{commit["author"]["username"]} - '
-                    + _trim_message(commit["message"])
+                    + trim_message(commit["message"])
                 ),
                 value=commit["url"].replace(commit["id"], commit["id"][:8]),
                 inline=False,
@@ -169,7 +171,7 @@ async def _handle_issue(listener, payload, cfg):
         message=(
             f'{payload["sender"]["login"]} {payload["action"]} issue '
             f'{payload["issue"]["number"]} - '
-            f'{_trim_message(payload["issue"]["title"], 200)} - '
+            f'{trim_message(payload["issue"]["title"], 200)} - '
             f'{payload["issue"]["html_url"]}'
         )
     )
@@ -182,7 +184,7 @@ async def _handle_pull_request(listener, payload, cfg):
         message=(
             f'{payload["sender"]["login"]} {payload["action"]} pull request '
             f'{payload["issue"]["number"]} - '
-            f'{_trim_message(payload["issue"]["title"], 200)} - '
+            f'{trim_message(payload["issue"]["title"], 200)} - '
             f'{payload["issue"]["html_url"]}'
         )
     )
@@ -190,7 +192,3 @@ async def _handle_pull_request(listener, payload, cfg):
 
 def _get_num_commits(commits):
     return '20+' if len(commits) == 20 else len(commits)
-
-
-def _trim_message(message, length=240):
-    return f'{message[:length - 3]}...' if len(message) > length else message

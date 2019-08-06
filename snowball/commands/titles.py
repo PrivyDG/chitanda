@@ -7,6 +7,7 @@ import requests
 
 from snowball.config import config
 from snowball.listeners import IRCListener
+from snowball.util import trim_message
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ async def _get_title(url):
     )
 
     data = response.raw.read(512000, decode_content=True).decode('utf-8')
-    text = ' '.join(re.split(r'\r|\n|\r\n', html.unescape(data.strip())))
+    text = ' '.join(re.split(r'\r|\n|\r\n', html.unescape(data))).strip()
     match = TITLE_REGEX.search(text)
     if match:
-        return f'Title: {match[1]}'
+        return f'Title: {trim_message(match[1], length=400)}'
