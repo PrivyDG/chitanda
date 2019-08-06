@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snowball"
-version = "0.1.1"
+version = "0.0.2"
 description = "An IRC bot framework."
 authors = ["dazzler <dazzler@riseup.net>"]
 license = "Apache-2.0"

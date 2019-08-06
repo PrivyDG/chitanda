@@ -4,9 +4,9 @@ import json
 import click
 
 import snowball.database  # noqa
-from snowball import CONFIG_PATH, cmdgroup, create_app_dirs, huey
+from snowball import cmdgroup, create_app_dirs, huey
 from snowball.bot import Snowball
-from snowball.config import BLANK_CONFIG
+from snowball.config import BLANK_CONFIG, CONFIG_PATH
 from snowball.database import (
     confirm_database_is_updated,
     create_database_if_nonexistent,

@@ -7,7 +7,10 @@ from pathlib import Path
 
 import click
 
-from snowball import DATABASE_PATH, cmdgroup
+from snowball import DATA_DIR, cmdgroup
+
+DATABASE_PATH = DATA_DIR / 'db.sqlite3'
+
 
 logger = logging.getLogger(__name__)
 

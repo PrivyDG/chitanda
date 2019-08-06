@@ -2,9 +2,11 @@ import json
 import logging
 import sys
 
-from snowball import CONFIG_PATH
+from snowball import CONFIG_DIR
 
 logger = logging.getLogger(__name__)
+
+CONFIG_PATH = CONFIG_DIR / 'config.json'
 
 BLANK_CONFIG = {
     'trigger_character': '!',

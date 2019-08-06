@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 import click
-from appdirs import user_data_dir
+from appdirs import user_config_dir, user_data_dir
 from huey.contrib.minimal import MiniHuey
 
 logger = logging.getLogger()
@@ -19,9 +19,8 @@ handler.setFormatter(formatter)
 
 logger.addHandler(handler)
 
+CONFIG_DIR = Path(user_config_dir('snowball', 'dazzler'))
 DATA_DIR = Path(user_data_dir('snowball', 'dazzler'))
-DATABASE_PATH = DATA_DIR / 'db.sqlite3'
-CONFIG_PATH = DATA_DIR / 'config.json'
 
 huey = MiniHuey()
 
@@ -37,6 +36,7 @@ def cmdgroup():
 
 def create_app_dirs():
     try:
+        CONFIG_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
         DATA_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
     except OSError:
         logger.critical(f'Could not create data directory ({DATA_DIR}).')
