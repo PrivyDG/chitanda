@@ -1,5 +1,5 @@
 cov:
-	pytest --cov-report term-missing --cov-branch --cov=ambience tests/
+	pytest --cov-report term-missing --cov-branch --cov=chitanda tests/
 
 lint:
 	black -S -t py37 -l 79 chitanda tests

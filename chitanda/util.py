@@ -2,11 +2,23 @@ import asyncio
 import functools
 import re
 import sys
-from types import AsyncGeneratorType
+from inspect import isasyncgenfunction
 
 from chitanda import BotError
 
 EVENT_LOOP = asyncio.get_event_loop()
+
+
+def irc_unstyle(text):
+    """
+    Taken from Makoto Fujimoto's ircmessage library.
+
+    The MIT License (MIT)
+    Copyright (c) 2015 Makoto Fujimoto
+    """
+    for code in ['\x0F', '\x02', '\x1D', '\x1F']:
+        text = text.replace(code, '')
+    return re.sub(r'\x03(?P<fg>\d{2})(,(?P<bg>\d{2}))?', '', text)
 
 
 def trim_message(message, length=240):
@@ -48,17 +60,22 @@ def args(*regexes):
 def admin_only(func):
     setattr(func, 'admin_only', True)
 
-    @functools.wraps(func)
-    async def wrapper(*, listener, author, **kwargs):
-        if not await listener.is_admin(author):
-            raise BotError('Unauthorized.')
+    if isasyncgenfunction(func):
 
-        response = func(listener=listener, author=author, **kwargs)
-        if isinstance(response, AsyncGeneratorType):
-            async for r in response:
+        @functools.wraps(func)
+        async def wrapper(*, listener, author, **kwargs):
+            if not await listener.is_admin(author):
+                raise BotError('Unauthorized.')
+            async for r in func(listener=listener, author=author, **kwargs):
                 yield r
-        else:
-            yield await response
+
+    else:
+
+        @functools.wraps(func)
+        async def wrapper(*, listener, author, **kwargs):
+            if not await listener.is_admin(author):
+                raise BotError('Unauthorized.')
+            return await func(listener=listener, author=author, **kwargs)
 
     return wrapper
 
@@ -66,20 +83,29 @@ def admin_only(func):
 def auth_only(func):
     setattr(func, 'auth_only', True)
 
-    @functools.wraps(func)
-    async def wrapper(*, listener, author, **kwargs):
-        username = await listener.is_authed(author)
-        if not username:
-            raise BotError('Identify with NickServ to use this command.')
+    if isasyncgenfunction(func):
 
-        response = func(
-            listener=listener, author=author, username=username, **kwargs
-        )
-        if isinstance(response, AsyncGeneratorType):
-            async for r in response:
+        @functools.wraps(func)
+        async def wrapper(*, listener, author, **kwargs):
+            username = await listener.is_authed(author)
+            if not username:
+                raise BotError('Identify with NickServ to use this command.')
+
+            async for r in func(
+                listener=listener, author=author, username=username, **kwargs
+            ):
                 yield r
-        else:
-            yield await response
+
+    else:
+
+        @functools.wraps(func)
+        async def wrapper(*, listener, author, **kwargs):
+            username = await listener.is_authed(author)
+            if not username:
+                raise BotError('Identify with NickServ to use this command.')
+            return await func(
+                listener=listener, author=author, username=username, **kwargs
+            )
 
     return wrapper
 
@@ -100,7 +126,7 @@ def private_message_only(func):
     setattr(func, 'private_message_only', True)
 
     @functools.wraps(func)
-    async def wrapper(*, private, **kwargs):
+    def wrapper(*, private, **kwargs):
         if private:
             return func(private=private, **kwargs)
         raise BotError('This command can only be run in a private message.')

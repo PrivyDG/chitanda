@@ -3,11 +3,9 @@ import re
 from collections import defaultdict, deque
 from functools import partial
 
-from ircmessage import unstyle
-
 from chitanda import BotError
 from chitanda.listeners import DiscordListener, IRCListener
-from chitanda.util import args, channel_only, register
+from chitanda.util import args, channel_only, irc_unstyle, register
 
 logger = logging.getLogger(__name__)
 
@@ -93,5 +91,5 @@ def _format_message(message, author, listener):
     if isinstance(listener, DiscordListener):
         author = f'<@{author}>'
     if isinstance(listener, IRCListener):
-        message = unstyle(message)
+        message = irc_unstyle(message)
     return f'<{author}> {message}'

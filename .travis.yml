@@ -9,7 +9,8 @@ install:
   - poetry install
 script:
   - poetry run pytest --cov-report term-missing --cov-branch --cov=chitanda tests/
-  - poetry run isort -rc -c .
-  - poetry run flake8
+  - black -S -t py37 -l 79 --check chitanda tests
+  - poetry run isort -rc -c chitanda tests
+  - poetry run flake8 chitanda tests
 after_success:
   - coveralls
