@@ -5,7 +5,6 @@ import sys
 
 import click
 
-import chitanda.database  # noqa
 from chitanda import huey
 from chitanda.bot import Chitanda
 from chitanda.config import BLANK_CONFIG, CONFIG_PATH
@@ -32,7 +31,7 @@ def run():
 def config():
     """Edit the configuration file."""
     if not CONFIG_PATH.is_file():
-        with open(CONFIG_PATH, 'w') as f:
+        with CONFIG_PATH.open('w') as f:
             json.dump(BLANK_CONFIG, f, indent=4)
     click.edit(filename=CONFIG_PATH)
 

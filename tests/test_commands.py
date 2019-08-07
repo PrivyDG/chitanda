@@ -3,8 +3,36 @@ from pathlib import Path
 import mock
 from click.testing import CliRunner
 
-from chitanda.commands import migrate
+from chitanda.commands import config, migrate
 from chitanda.database import Migration, database
+
+
+@mock.patch('chitanda.commands.json')
+@mock.patch('chitanda.commands.click')
+def test_config_file_exists(click, json, monkeypatch):
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        cfg_path = Path.cwd() / 'config.json'
+        cfg_path.touch()
+        monkeypatch.setattr('chitanda.commands.CONFIG_PATH', cfg_path)
+        runner.invoke(config)
+
+        json.dump.assert_not_called()
+        click.edit.assert_called_with(filename=cfg_path)
+
+
+@mock.patch('chitanda.commands.json')
+@mock.patch('chitanda.commands.click')
+def test_config_file_doesnt_exist(click, json, monkeypatch):
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        cfg_path = Path.cwd() / 'config.json'
+        monkeypatch.setattr('chitanda.commands.CONFIG_PATH', cfg_path)
+        runner.invoke(config)
+
+        assert cfg_path.is_file()
+        json.dump.assert_called()
+        click.edit.assert_called_with(filename=cfg_path)
 
 
 @mock.patch('chitanda.commands.calculate_migrations_needed')

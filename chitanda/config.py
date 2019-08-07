@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 CONFIG_PATH = CONFIG_DIR / 'config.json'
 
 BLANK_CONFIG = {
-    'trigger_character': '!',
+    'trigger_character': '.',
     'user_agent': 'chitanda irc/discord bot',
     'irc_servers': {},
     'discord_token': '',
@@ -22,29 +22,27 @@ BLANK_CONFIG = {
 
 class Config:
     def __init__(self):
-        self.config = None  # Lazy load config.
-
-    def __getitem__(self, key):
-        if self.config is None:
-            self.config = self.load_config()
-
-        try:
-            return self.config[key]
-        except TypeError:
-            logger.critical('Configuration dictionary missing, exiting.')
-            sys.exit(1)
+        self._config = None  # Lazy load config.
 
     def reload(self):
-        self.config = self.load_config()
+        self._config = self._load_config()
 
-    def load_config(self):
-        if not CONFIG_PATH.exists():
-            return {}
-        with open(CONFIG_PATH, 'r') as cf:
-            try:
-                return json.load(cf)
-            except json.decoder.JSONDecodeError:
-                logger.critical('Config is not valid JSON.')
+    def __getitem__(self, key):
+        if self._config is None:
+            self._config = self._load_config()
+
+        return self._config[key]
+
+    def _load_config(self):
+        if CONFIG_PATH.exists():
+            with open(CONFIG_PATH, 'r') as cf:
+                try:
+                    return json.load(cf)
+                except json.decoder.JSONDecodeError:
+                    pass
+
+        logger.critical('Config is not valid JSON or does not exist.')
+        sys.exit(1)
 
 
 config = Config()

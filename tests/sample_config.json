@@ -1,0 +1,37 @@
+{
+  "trigger_character": ".",
+  "user_agent": "chitanda irc/discord bot v99.99",
+  "irc_servers": {
+    "irc.freenode.net": {
+      "port": "6697",
+      "tls": true,
+      "tls_verify": false,
+      "nickname": "chitanda",
+      "perform": []
+    }
+  },
+  "discord_token": "abcdef",
+  "webserver": {
+    "enable": true,
+    "port": 38248
+  },
+  "modules_enabled": [],
+  "aliases": {
+    "c": "choose",
+    "wa": "wolframalpha"
+  },
+  "admins": {
+    "DiscordListener": [],
+    "IRCListener@irc.freenode.net": ["dazzler"]
+  },
+  "github_relay": {
+    "secret": "",
+    "relays": {}
+  },
+  "wolframalpha": {
+    "appid": "token"
+  },
+  "lastfm": {
+    "api_key": "api key"
+  }
+}
