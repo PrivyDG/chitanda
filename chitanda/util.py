@@ -17,9 +17,9 @@ def trim_message(message, length=240):
 
 def register(trigger):
     def decorator(func):
-        from chitanda.bot import Snowball
+        from chitanda.bot import Chitanda
 
-        Snowball.commands[trigger] = sys.modules[func.__module__]
+        Chitanda.commands[trigger] = sys.modules[func.__module__]
         return functools.wraps(func)(func)
 
     return decorator

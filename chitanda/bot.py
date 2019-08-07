@@ -13,7 +13,7 @@ from chitanda.modules import load_commands
 logger = logging.getLogger(__name__)
 
 
-class Snowball:
+class Chitanda:
 
     commands = {}
 

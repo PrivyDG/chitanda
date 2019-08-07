@@ -5,7 +5,7 @@ import click
 
 import chitanda.database  # noqa
 from chitanda import cmdgroup, create_app_dirs, huey
-from chitanda.bot import Snowball
+from chitanda.bot import Chitanda
 from chitanda.config import BLANK_CONFIG, CONFIG_PATH
 from chitanda.database import (
     confirm_database_is_updated,
@@ -17,7 +17,7 @@ from chitanda.database import (
 def run():
     """Run the bot."""
     huey.start()
-    bot = Snowball()
+    bot = Chitanda()
     bot.connect()
     asyncio.get_event_loop().run_forever()
 

@@ -3,6 +3,7 @@ category = "main"
 description = "Async http client/server framework (asyncio)"
 name = "aiohttp"
 optional = false
+platform = "*"
 python-versions = ">=3.5.3"
 version = "3.5.4"
 
@@ -18,6 +19,7 @@ category = "main"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "1.4.3"
 
@@ -26,6 +28,7 @@ category = "main"
 description = "Timeout context manager for asyncio programs"
 name = "async-timeout"
 optional = false
+platform = "*"
 python-versions = ">=3.5.3"
 version = "3.0.1"
 
@@ -34,6 +37,7 @@ category = "dev"
 description = "Atomic file writes."
 name = "atomicwrites"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.3.0"
 
@@ -42,6 +46,7 @@ category = "main"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "19.1.0"
 
@@ -50,6 +55,7 @@ category = "dev"
 description = "A tool that automatically formats Python code to conform to the PEP 8 style guide"
 name = "autopep8"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "1.4.4"
 
@@ -61,12 +67,13 @@ category = "dev"
 description = "The uncompromising code formatter."
 name = "black"
 optional = false
+platform = "*"
 python-versions = ">=3.6"
-version = "19.3b0"
+version = "18.9b0"
 
 [package.dependencies]
 appdirs = "*"
-attrs = ">=18.1.0"
+attrs = ">=17.4.0"
 click = ">=6.5"
 toml = ">=0.9.4"
 
@@ -75,6 +82,7 @@ category = "dev"
 description = "httplib2 caching for requests"
 name = "cachecontrol"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.12.5"
 
@@ -87,6 +95,7 @@ category = "dev"
 description = "Cachy provides a simple yet effective caching library."
 name = "cachy"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.2.0"
 
@@ -95,26 +104,31 @@ category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "2019.6.16"
 
 [[package]]
 category = "main"
 description = "Foreign Function Interface for Python calling C code."
-marker = "sys_platform == \"win32\" and platform_python_implementation == \"CPython\""
 name = "cffi"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "1.12.3"
 
 [package.dependencies]
 pycparser = "*"
 
+[package.requirements]
+platform = "win32"
+
 [[package]]
 category = "main"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "3.0.4"
 
@@ -123,6 +137,7 @@ category = "dev"
 description = "Cleo allows you to create beautiful and testable command-line interfaces."
 name = "cleo"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.6.8"
 
@@ -135,23 +150,28 @@ category = "main"
 description = "Composable command line interface toolkit"
 name = "click"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "7.0"
 
 [[package]]
 category = "dev"
 description = "Cross-platform colored terminal text."
-marker = "sys_platform == \"win32\""
 name = "colorama"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.4.1"
+
+[package.requirements]
+platform = "win32"
 
 [[package]]
 category = "dev"
 description = "Code coverage measurement for Python"
 name = "coverage"
 optional = false
+platform = "*"
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, <4"
 version = "4.5.4"
 
@@ -160,6 +180,7 @@ category = "main"
 description = "A python wrapper for the Discord API"
 name = "discord.py"
 optional = false
+platform = "*"
 python-versions = ">=3.5.3"
 version = "1.2.3"
 
@@ -172,6 +193,7 @@ category = "dev"
 description = "Discover and load entry points from installed packages."
 name = "entrypoints"
 optional = false
+platform = "*"
 python-versions = ">=2.7"
 version = "0.3"
 
@@ -180,6 +202,7 @@ category = "dev"
 description = "the modular source code checker: pep8, pyflakes and co"
 name = "flake8"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "3.7.8"
 
@@ -194,19 +217,23 @@ category = "main"
 description = "Coroutine-based network library"
 name = "gevent"
 optional = false
+platform = "*"
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 version = "1.4.0"
 
 [package.dependencies]
-cffi = ">=1.11.5"
 greenlet = ">=0.4.14"
+
+[package.dependencies.cffi]
+platform = "win32"
+version = ">=1.11.5"
 
 [[package]]
 category = "main"
 description = "Lightweight in-process concurrent programming"
-marker = "platform_python_implementation == \"CPython\""
 name = "greenlet"
 optional = false
+platform = "any"
 python-versions = "*"
 version = "0.4.15"
 
@@ -215,6 +242,7 @@ category = "dev"
 description = "HTML parser based on the WHATWG HTML specification"
 name = "html5lib"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "1.0.1"
 
@@ -227,6 +255,7 @@ category = "main"
 description = "huey, a little task queue"
 name = "huey"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "1.11.0"
 
@@ -235,6 +264,7 @@ category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.8"
 
@@ -243,6 +273,7 @@ category = "dev"
 description = "Read metadata from Python packages"
 name = "importlib-metadata"
 optional = false
+platform = "*"
 python-versions = ">=2.7,!=3.0,!=3.1,!=3.2,!=3.3"
 version = "0.19"
 
@@ -254,6 +285,7 @@ category = "main"
 description = "A simple Python module for applying and stripping formatting from IRC messages."
 name = "ircmessage"
 optional = false
+platform = "UNKNOWN"
 python-versions = "*"
 version = "0.1.1"
 
@@ -265,6 +297,7 @@ category = "dev"
 description = "A Python utility / library to sort Python imports."
 name = "isort"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "4.3.21"
 
@@ -273,6 +306,7 @@ category = "dev"
 description = "A small but fast and easy to use stand-alone template engine written in pure python."
 name = "jinja2"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "2.10.1"
 
@@ -284,6 +318,7 @@ category = "dev"
 description = "An implementation of JSON Schema validation for Python"
 name = "jsonschema"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "2.6.0"
 
@@ -292,6 +327,7 @@ category = "dev"
 description = "Safely add untrusted strings to HTML/XML markup."
 name = "markupsafe"
 optional = false
+platform = "*"
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 version = "1.1.1"
 
@@ -300,6 +336,7 @@ category = "dev"
 description = "McCabe checker, plugin for flake8"
 name = "mccabe"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.6.1"
 
@@ -308,6 +345,7 @@ category = "dev"
 description = "Rolling backport of unittest.mock for all Pythons"
 name = "mock"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "3.0.5"
 
@@ -319,6 +357,7 @@ category = "dev"
 description = "More routines for operating on iterables, beyond itertools"
 name = "more-itertools"
 optional = false
+platform = "*"
 python-versions = ">=3.4"
 version = "7.2.0"
 
@@ -327,6 +366,7 @@ category = "dev"
 description = "MessagePack (de)serializer."
 name = "msgpack"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.6.1"
 
@@ -335,6 +375,7 @@ category = "main"
 description = "multidict implementation"
 name = "multidict"
 optional = false
+platform = "*"
 python-versions = ">=3.4.1"
 version = "4.5.2"
 
@@ -343,6 +384,7 @@ category = "dev"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "19.1"
 
@@ -356,6 +398,7 @@ category = "dev"
 description = "Bring colors to your terminal."
 name = "pastel"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.1.1"
 
@@ -364,6 +407,7 @@ category = "dev"
 description = "Query metadatdata from sdists / bdists / installed packages."
 name = "pkginfo"
 optional = false
+platform = "Unix"
 python-versions = "*"
 version = "1.5.0.1"
 
@@ -372,6 +416,7 @@ category = "dev"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
 optional = false
+platform = "unix"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.12.0"
 
@@ -383,6 +428,7 @@ category = "dev"
 description = "Python dependency management and packaging made easy."
 name = "poetry"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.11.5"
 
@@ -405,6 +451,7 @@ category = "dev"
 description = "make setup.py (setutools) from pyproject.toml (poetry)"
 name = "poetry-setup"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.3.6"
 
@@ -419,6 +466,7 @@ category = "dev"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
 optional = false
+platform = "unix"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.8.0"
 
@@ -427,23 +475,28 @@ category = "dev"
 description = "Python style guide checker"
 name = "pycodestyle"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.5.0"
 
 [[package]]
 category = "main"
 description = "C parser in Python"
-marker = "sys_platform == \"win32\" and platform_python_implementation == \"CPython\""
 name = "pycparser"
 optional = false
+platform = "Cross Platform"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.19"
+
+[package.requirements]
+platform = "win32"
 
 [[package]]
 category = "main"
 description = "A compact, flexible and standards-abiding IRC library for Python 3."
 name = "pydle"
 optional = false
+platform = "*"
 python-versions = ">=3.5"
 version = "0.9.2"
 
@@ -452,6 +505,7 @@ category = "dev"
 description = "passive checker of Python programs"
 name = "pyflakes"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.1.1"
 
@@ -460,6 +514,7 @@ category = "dev"
 description = "A pure Python Levenshtein implementation that's not freaking GPL'd."
 name = "pylev"
 optional = false
+platform = "UNKNOWN"
 python-versions = "*"
 version = "1.3.0"
 
@@ -468,6 +523,7 @@ category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
+platform = "*"
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "2.4.2"
 
@@ -476,6 +532,7 @@ category = "dev"
 description = "Persistent/Functional/Immutable data structures"
 name = "pyrsistent"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.14.11"
 
@@ -487,13 +544,13 @@ category = "dev"
 description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
+platform = "unix"
 python-versions = ">=3.5"
 version = "5.0.1"
 
 [package.dependencies]
 atomicwrites = ">=1.0"
 attrs = ">=17.4.0"
-colorama = "*"
 importlib-metadata = ">=0.12"
 more-itertools = ">=4.0.0"
 packaging = "*"
@@ -501,11 +558,16 @@ pluggy = ">=0.12,<1.0"
 py = ">=1.5.0"
 wcwidth = "*"
 
+[package.dependencies.colorama]
+platform = "win32"
+version = "*"
+
 [[package]]
 category = "dev"
 description = "Pytest plugin for measuring coverage."
 name = "pytest-cov"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.7.1"
 
@@ -518,6 +580,7 @@ category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "2.22.0"
 
@@ -532,6 +595,7 @@ category = "dev"
 description = "A utility belt for advanced users of python-requests"
 name = "requests-toolbelt"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.8.0"
 
@@ -543,6 +607,7 @@ category = "dev"
 description = "Tool to Detect Surrounding Shell"
 name = "shellingham"
 optional = false
+platform = "*"
 python-versions = ">=2.6,!=3.0,!=3.1,!=3.2,!=3.3"
 version = "1.3.1"
 
@@ -551,6 +616,7 @@ category = "main"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
+platform = "UNKNOWN"
 python-versions = "*"
 version = "1.10.0"
 
@@ -559,6 +625,7 @@ category = "dev"
 description = "Python Library for Tom's Obvious, Minimal Language"
 name = "toml"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.10.0"
 
@@ -567,6 +634,7 @@ category = "dev"
 description = "Style preserving TOML library"
 name = "tomlkit"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.4.6"
 
@@ -575,6 +643,7 @@ category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
+platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
 version = "1.25.3"
 
@@ -583,6 +652,7 @@ category = "dev"
 description = "Measures number of Terminal column cells of wide-character codes"
 name = "wcwidth"
 optional = false
+platform = "UNKNOWN"
 python-versions = "*"
 version = "0.1.7"
 
@@ -591,6 +661,7 @@ category = "dev"
 description = "Character encoding aliases for legacy web content"
 name = "webencodings"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.5.1"
 
@@ -599,6 +670,7 @@ category = "main"
 description = "An implementation of the WebSocket Protocol (RFC 6455 & 7692)"
 name = "websockets"
 optional = false
+platform = "*"
 python-versions = ">=3.4"
 version = "6.0"
 
@@ -607,6 +679,7 @@ category = "dev"
 description = "A formatter for Python code."
 name = "yapf"
 optional = false
+platform = "*"
 python-versions = "*"
 version = "0.28.0"
 
@@ -615,6 +688,7 @@ category = "main"
 description = "Yet another URL library"
 name = "yarl"
 optional = false
+platform = "*"
 python-versions = ">=3.5.3"
 version = "1.3.0"
 
@@ -627,11 +701,13 @@ category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 name = "zipp"
 optional = false
+platform = "*"
 python-versions = ">=2.7"
 version = "0.5.2"
 
 [metadata]
-content-hash = "f4147ff8fd671236156b0aaa50ccf74f7af4fe9d68ca3c60608c8dc4ca1bd3cd"
+content-hash = "5efc298b9ad140843e6bb7048229a2cc611f60ee6834a058cfecf30e4cf1e721"
+platform = "*"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -641,7 +717,7 @@ async-timeout = ["0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
 autopep8 = ["4d8eec30cc81bc5617dbf1218201d770dc35629363547f17577c61683ccfb3ee"]
-black = ["09a9dcb7c46ed496a9850b76e4e825d6049ecd38b611f1224857a79bd985a8cf", "68950ffd4d9169716bcb8719a56c07a2f4485354fec061cdd5910aa07369731c"]
+black = ["817243426042db1d36617910df579a54f1afd659adb96fc5032fcf4b36209739", "e030a9a28f542debc08acceb273f228ac422798e5215ba2a791a6ddeaaca22a5"]
 cachecontrol = ["cef77effdf51b43178f6a2d3b787e3734f98ade253fa3187f3bb7315aaa42ff7"]
 cachy = ["b71513e5a38ce90c1280c02b7d8d6bb3fdf64666c9cc0584f2479afea097d56c", "b71e8e7ddb5b386e23e81befdfac8a93885406139b8681bedc17b3444fcb8fca"]
 certifi = ["046832c04d4e752f37383b628bc601a7ea7211496b4638f6514d0e5b9acc4939", "945e3ba63a0b9f577b1395204e13c3a231f9bc0223888be653286534e5873695"]

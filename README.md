@@ -1,5 +1,10 @@
 # chitanda
 
+[![Build Status](https://travis-ci.org/dazuling/chitanda.svg?branch=master)](https://travis-ci.org/dazuling/chitanda)
+[![Coverage Status](https://coveralls.io/repos/github/dazuling/chitanda/badge.svg?branch=master)](https://coveralls.io/github/dazuling/chitanda?branch=master)
+[![Pypi](https://img.shields.io/pypi/v/chitanda.svg)](https://pypi.python.org/pypi/chitanda)
+[![Pyversions](https://img.shields.io/pypi/pyversions/chitanda.svg)](https://pypi.python.org/pypi/chitanda)
+
 An extensible IRC & Discord bot. Requires Python 3.7.
 
 Refer to the [GitHub wiki](https://github.com/dazuling/chitanda/wiki) for

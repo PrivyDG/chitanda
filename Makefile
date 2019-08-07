@@ -1,15 +1,15 @@
 cov:
-	poetry run pytest --cov-report term-missing --cov-branch --cov=ambience tests/
+	pytest --cov-report term-missing --cov-branch --cov=ambience tests/
 
 lint:
-	black -S -t py37 -l 79 chitanda
-	poetry run isort -rc chitanda
-	poetry run flake8 chitanda
+	black -S -t py37 -l 79 chitanda tests
+	isort -rc chitanda tests
+	flake8 chitanda tests
 
-test:
-	poetry run pytest tests/
-	black -S -t py37 -l 79 --check chitanda
-	poetry run isort -rc -c .
-	poetry run flake8
+tests:
+	pytest tests/
+	black -S -t py37 -l 79 --check chitanda tests
+	isort -rc -c chitanda tests
+	flake8 chitanda tests
 
-.PHONY: cov lint test
+.PHONY: cov lint tests
