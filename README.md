@@ -8,9 +8,9 @@
 An extensible IRC & Discord bot. Requires Python 3.7.
 
 Refer to the [GitHub wiki](https://github.com/dazuling/chitanda/wiki) for
-documentation.
+documentation on using the bot and (TODO) extending it.
 
-## Installation
+## Setup
 
 ### From PyPI with pipx
 
@@ -20,13 +20,31 @@ $ chitanda migrate  # Upgrade database to latest version.
 $ chitanda config  # See wiki for configuration instructions.
 ```
 
-Run chitanda with
+Run chitanda with the following command:
 
 ```bash
 $ chitanda run
 ```
 
-### From source
+### From source with poetry
+
+```bash
+$ git clone git@github.com:dazuling/chitanda.git
+$ cd chitanda
+$ poetry install
+$ poetry shell
+$ chitanda migrate  # Upgrade database to latest version.
+$ chitanda config  # See wiki for configuration instructions.
+```
+
+Run chitanda with the following commands:
+
+```bash
+$ cd chitanda  # Change to project directory.
+$ poetry run chitanda run
+```
+
+### From source with pip
 
 ```bash
 $ git clone git@github.com:dazuling/chitanda.git
@@ -38,7 +56,7 @@ $ chitanda migrate  # Upgrade database to latest version.
 $ chitanda config  # See wiki for configuration instructions.
 ```
 
-Run chitanda with the following commands
+Run chitanda with the following commands:
 
 ```bash
 $ cd chitanda  # Change to project directory.

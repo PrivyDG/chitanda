@@ -13,6 +13,10 @@ from chitanda.modules import load_commands
 logger = logging.getLogger(__name__)
 
 
+class NoCommandFound(BotError):
+    pass
+
+
 class Chitanda:
 
     commands = {}
@@ -22,14 +26,15 @@ class Chitanda:
         self.discord_listener = None
         self.message_handlers = []
         self.response_handlers = []
-
         if config['webserver']['enable']:
             self.web_application = web.Application()
 
+    def start(self):
         load_commands(self)
-
-        if config['webserver']['enable']:
+        if self.web_application():
             self.webserver = self._start_webserver()
+
+        self.connect()
 
     def _start_webserver(self):
         try:
@@ -72,6 +77,9 @@ class Chitanda:
         self.discord_listener.run(config['discord_token'])
 
     async def handle_message(self, listener, target, author, message, private):
+        logger.debug(
+            f'New message in {target} on {listener} from {author}: {message}'
+        )
         for handler in self.message_handlers:
             response = handler(listener, target, author, message, private)
             await self.handle_response(listener, target, response)
@@ -81,23 +89,10 @@ class Chitanda:
     async def dispatch_command(
         self, listener, target, author, message, private
     ):
-        logger.debug(
-            f'Message received on {listener} in channel {target} '
-            f'from {author}: {message}'
-        )
-
         try:
-            if not message.startswith(config['trigger_character']):
-                return
+            trigger, command, message = self._parse_command(message)
+            logger.info(f'Command triggered: {trigger}.')
 
-            trigger, message = self._resolve_alias(*message[1:].split(' ', 1))
-            command = self.commands[trigger]
-        except (IndexError, KeyError):
-            return
-
-        logger.info(f'Command triggered: {trigger}.')
-
-        try:
             response = command.call(
                 bot=self,
                 listener=listener,
@@ -109,9 +104,21 @@ class Chitanda:
 
             if response:
                 await self.handle_response(listener, target, response)
+        except NoCommandFound:
+            pass
         except BotError as e:
             logger.info(f'Error triggered by {author}: {e}.')
             await listener.message(target, f'Error: {e}')
+
+    def _parse_command(self, message):
+        try:
+            if message.startswith(config['trigger_character']):
+                split_message = message[1:].split(' ', 1)
+                trigger, message = self._resolve_alias(*split_message)
+                return trigger, self.commands[trigger], message
+        except (IndexError, KeyError):
+            pass
+        raise NoCommandFound
 
     def _resolve_alias(self, trigger, message=''):
         try:
@@ -120,40 +127,31 @@ class Chitanda:
             return trigger, message
 
     async def handle_response(self, listener, target, response):
+        logger.debug(f'Response received of type: {type(response)}.')
+
         if isinstance(response, AsyncGeneratorType):
-            logger.debug('AsyncGenerator response received.')
             async for resp in response:
-                packed_resp = self._pack_response(resp, target)
-                await self.call_response_handlers(
-                    listener, target, packed_resp['message']
-                )
-                await listener.message(**packed_resp)
-        else:
-            response = await response
-            if isinstance(response, GeneratorType):
-                logger.debug('Generator response received.')
-                for resp in response:
-                    packed_resp = self._pack_response(resp, target)
-                    await self.call_response_handlers(
-                        listener, target, packed_resp['message']
-                    )
-                    await listener.message(**packed_resp)
-            elif isinstance(response, dict):
-                logger.debug('Dict response received.')
-                await self.call_response_handlers(
-                    listener, target, resp['message']
-                )
-                await listener.message(**response)
-            elif response:
-                logger.debug('Str response received.')
-                await self.call_response_handlers(listener, target, response)
-                await listener.message(target, str(response))
+                await self._handle_response_message(listener, target, resp)
+            return
+
+        response = await response
+
+        if isinstance(response, GeneratorType):
+            for resp in response:
+                await self._handle_response_message(listener, target, resp)
+        elif response:
+            await self._handle_response_message(listener, target, response)
+
+    async def _handle_response_message(self, listener, target, response):
+        pr = self._pack_response(response, target)
+        await self.call_response_handlers(listener, target, pr['message'])
+        await listener.message(**pr)
+
+    def _pack_response(self, response, target):
+        if isinstance(response, dict):
+            return response
+        return {'target': target, 'message': str(response)}
 
     async def call_response_handlers(self, listener, target, response):
         for handler in self.response_handlers:
             handler(listener, target, response)
-
-    def _pack_response(self, resp, target):
-        if not isinstance(resp, dict):
-            resp = {'target': target, 'message': str(resp)}
-        return resp

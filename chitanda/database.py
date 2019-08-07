@@ -7,7 +7,7 @@ from pathlib import Path
 
 import click
 
-from chitanda import DATA_DIR
+from chitanda import DATA_DIR, BotError
 
 DATABASE_PATH = DATA_DIR / 'db.sqlite3'
 
@@ -51,9 +51,9 @@ def create_database_if_nonexistent():
 def confirm_database_is_updated():
     if calculate_migrations_needed():
         if not len(sys.argv) == 2 or sys.argv[1] != 'migrate':
-            logger.warning('The database needs to be migrated.')
-            logger.warning('Run `chitanda migrate`.')
-            sys.exit(1)
+            raise BotError(
+                'The database needs to be migrated. Run `chitanda migrate`.'
+            )
 
 
 def calculate_migrations_needed():

@@ -23,7 +23,7 @@ def run():
     """Run the bot."""
     huey.start()
     bot = Chitanda()
-    bot.connect()
+    bot.start()
     asyncio.get_event_loop().run_forever()
 
 

@@ -5,6 +5,7 @@ import mock
 import pytest
 from click.testing import CliRunner
 
+from chitanda import BotError
 from chitanda.database import (
     Migration,
     _find_migrations,
@@ -48,7 +49,7 @@ def test_confirm_db_updated_true(calculate):
 @mock.patch('chitanda.database.calculate_migrations_needed')
 def test_confirm_db_updated_false(calculate):
     calculate.return_value = True
-    with pytest.raises(SystemExit):
+    with pytest.raises(BotError):
         confirm_database_is_updated()
 
 
