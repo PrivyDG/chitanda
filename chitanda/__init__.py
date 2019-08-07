@@ -6,7 +6,6 @@ import logging
 import sys
 from pathlib import Path
 
-import click
 from appdirs import user_config_dir, user_data_dir
 from huey.contrib.minimal import MiniHuey
 
@@ -26,11 +25,6 @@ huey = MiniHuey()
 
 
 class BotError(Exception):
-    pass
-
-
-@click.group()
-def cmdgroup():
     pass
 
 

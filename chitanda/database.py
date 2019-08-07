@@ -7,7 +7,7 @@ from pathlib import Path
 
 import click
 
-from chitanda import DATA_DIR, cmdgroup
+from chitanda import DATA_DIR
 
 DATABASE_PATH = DATA_DIR / 'db.sqlite3'
 
@@ -24,28 +24,6 @@ def database():
         cursor = conn.cursor()
         yield conn, cursor
         cursor.close()
-
-
-@cmdgroup.command()
-def migrate():
-    """Upgrade the database to the latest migration."""
-    migrations_needed = _calculate_migrations_needed()
-
-    if not migrations_needed:
-        click.echo('Database is up to date.')
-        exit()
-
-    logger.info('Pending database migrations found.')
-    with database() as (conn, cursor):
-        for mig in migrations_needed:
-            logger.info(f'Executing migration at {mig.path} .')
-            with mig.path.open() as sql:
-                cursor.executescript(sql.read())
-                cursor.execute(
-                    'INSERT INTO versions (source, version) VALUES (?, ?)',
-                    (mig.source, mig.version),
-                )
-            conn.commit()
 
 
 def create_database_if_nonexistent():
@@ -71,14 +49,14 @@ def create_database_if_nonexistent():
 
 
 def confirm_database_is_updated():
-    if _calculate_migrations_needed():
+    if calculate_migrations_needed():
         if not len(sys.argv) == 2 or sys.argv[1] != 'migrate':
             logger.warning('The database needs to be migrated.')
             logger.warning('Run `chitanda migrate`.')
             sys.exit(1)
 
 
-def _calculate_migrations_needed():
+def calculate_migrations_needed():
     migrations = _find_migrations()
     versions = _get_versions()
 
@@ -101,7 +79,7 @@ def _find_migrations():
                     source=sql_path.parts[-3],
                 )
             )
-        except TypeError:
+        except ValueError:
             click.echo(f'Invalid migration name: {sql_path}.')
             raise click.Abort
     return migrations

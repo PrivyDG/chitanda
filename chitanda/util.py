@@ -1,12 +1,9 @@
-import asyncio
 import functools
 import re
 import sys
 from inspect import isasyncgenfunction
 
 from chitanda import BotError
-
-EVENT_LOOP = asyncio.get_event_loop()
 
 
 def irc_unstyle(text):

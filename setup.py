@@ -53,14 +53,13 @@ setup(
         'appdirs (>=1.4,<2.0)',
         'aiohttp (>=3.5,<4.0)',
         'requests (>=2.22,<3.0)',
-        'ircmessage (>=0.1.1,<0.2.0)',
     ],  # Optional
     # https://setuptools.readthedocs.io/en/latest/setuptools.html#dependencies-that-aren-t-in-pypi
     dependency_links=[],  # Optional
     # https://stackoverflow.com/a/16576850
     include_package_data=True,
     entry_points={  # Optional
-        'console_scripts': ['chitanda=chitanda.__main__:main', ],
+        'console_scripts': ['chitanda=chitanda.__main__:run', ],
     },
     # https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
     project_urls={  # Optional
